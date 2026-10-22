@@ -87,6 +87,7 @@ nav button.on{color:var(--sage)}
 @media (prefers-reduced-motion:reduce){.grid .cat{animation:none}.cat:hover,.item:hover{transform:none}}
 @media (min-width:760px){.app{max-width:900px;padding:44px 40px 60px}.grid{grid-template-columns:repeat(4,1fr)}.list{display:grid;grid-template-columns:1fr 1fr;gap:12px}.list .item{margin:0}h1{font-size:44px}.banner{padding:36px 34px}.cat{min-height:150px}}
 @media (min-width:1000px){body{padding-left:230px}body.nn{padding-left:0}nav{top:0;right:auto;bottom:0;width:230px;border-top:0;border-right:1px solid var(--line);padding:40px 16px}nav div{flex-direction:column;gap:6px;max-width:none}nav button{flex-direction:row;justify-content:flex-start;gap:12px;font-size:15px;padding:12px 14px;border-radius:14px}nav button.on{background:var(--t2)}.app{max-width:1080px;padding:48px 48px 60px}.list{grid-template-columns:1fr 1fr 1fr}.rec{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:44px;align-items:start}.rl{position:sticky;top:30px}.hero{height:340px}.toast{bottom:40px}}
+.acts{display:flex;gap:16px;flex-wrap:wrap;margin-top:6px}.acts .link{margin:0}.sugcard{cursor:default}
 </style>
 </head>
 <body>
@@ -177,15 +178,36 @@ function score(r,c){var s=0,tg=r.tags||[];
   if(!c.free&&r.difficulty==="Difícil")s-=2;
   if(r.is_favorite)s+=1;
   return s+(hash(r.id+new Date().toDateString())%100)/100}
+var TG="https://www.tudogostoso.com.br/receita/";
+var SUGG=[
+{n:"Caldo verde",u:TG+"9031-caldo-verde.html",c:"Almoços",t:["Sopas"],m:["cold"]},
+{n:"Canja de galinha rápida",u:TG+"42591-canja-de-galinha-rapida.html",c:"Almoços",t:["Sopas","Aves"],m:["cold"]},
+{n:"Sopa de legumes com macarrão",u:TG+"15665-sopa-de-legumes-com-macarrao.html",c:"Almoços",t:["Sopas"],m:["cold"]},
+{n:"Chocolate quente cremoso",u:TG+"130871-chocolate-quente-cremoso.html",c:"Doces",t:["Bebidas"],m:["cold"]},
+{n:"Bolo de fubá simples",u:TG+"21560-bolo-de-fuba-simples.html",c:"Doces",t:["Bolos"],m:["cold","mild"]},
+{n:"Lasanha de carne moída",u:TG+"876-lasanha-de-carne-moida.html",c:"Almoços",t:["Massas","Carnes"],m:["cold","mild"]},
+{n:"Estrogonofe de carne simples",u:TG+"53915-estrogonofe-de-carne-simples.html",c:"Almoços",t:["Carnes"],m:["cold","mild"]},
+{n:"Bolo de cenoura",u:TG+"23-bolo-de-cenoura.html",c:"Doces",t:["Bolos"],m:["cold","mild"]},
+{n:"Torta de frango",u:TG+"1282-torta-de-frango.html",c:"Salgados",t:["Aves"],m:["mild"]},
+{n:"Fricassê de frango",u:TG+"10254-fricasse-de-frango.html",c:"Almoços",t:["Aves"],m:["mild"]},
+{n:"Strogonoff de frango",u:TG+"2462-strogonoff-de-frango.html",c:"Almoços",t:["Aves"],m:["mild"]},
+{n:"Bolo de laranja",u:TG+"13953-bolo-de-laranja.html",c:"Doces",t:["Bolos"],m:["mild","hot"]},
+{n:"Moqueca de peixe fácil",u:TG+"133817-moqueca-de-peixe-facil.html",c:"Almoços",t:["Peixes e frutos do mar"],m:["mild","hot"]},
+{n:"Empadão de frango delicioso",u:TG+"8054-empadao-de-frango-delicioso.html",c:"Salgados",t:["Aves"],m:["mild"]},
+{n:"Mousse de maracujá",u:TG+"1599-mousse-de-maracuja.html",c:"Doces",t:["Bebidas"],m:["hot"]},
+{n:"Salpicão de frango simples",u:TG+"125788-salpicao-de-frango-simples.html",c:"Salgados",t:["Aves","Saudável"],m:["hot"]},
+{n:"Ceviche de tilápia",u:TG+"54909-delicioso-ceviche-de-tilapia.html",c:"Almoços",t:["Peixes e frutos do mar"],m:["hot"]},
+{n:"Tabule",u:TG+"58-tabule.html",c:"Almoços",t:["Saudável"],m:["hot"]},
+{n:"Pudim de leite condensado",u:TG+"31593-pudim-de-leite-condensado.html",c:"Doces",t:["Bolos"],m:["mild","hot"]}
+];
+function sugCard(p){var x=p.x;return '<div class="item sugcard"><div class="th t'+(TN[x.c]||4)+'">'+ic("dish",28)+'</div><div><b>'+esc(x.n)+'</b><small>TudoGostoso</small><div class="acts"><a class="link" href="'+x.u+'" target="_blank" rel="noopener">Ver receita</a><button class="link" data-addsug="'+SUGG.indexOf(x)+'">Adicionar ao caderno</button></div></div></div>'}
 function sugHtml(){
   var c=ctx(),dia=["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"][c.w],per={morning:"de manhã",lunch:"na hora do almoço",afternoon:"à tarde",night:"à noite"}[c.per];
   var meta=dia+", "+per+(c.temp==null?"":" · "+Math.round(c.temp)+" °C");
   var head=(c.mood==="cold"?"Friozinho pede algo quentinho":c.mood==="hot"?"Calor pede algo leve e fresquinho":"Tempo ameno para cozinhar com calma")+(c.free?", sem pressa":", e prático");
-  var picks=S.rows.map(function(r){return {r:r,s:score(r,c)}}).filter(function(x){return x.s>=2}).sort(function(a,b){return b.s-a.s}).slice(0,3);
-  var out='<div class="sugh">'+ic(c.mood==="hot"?"sun":"cup",32)+'<div><small>'+meta+'</small><b>'+head+'</b></div></div><div class="list">'+picks.map(function(x){return item(x.r)}).join('');
-  var ids=IDEAS[c.mood].slice().sort(function(a,b){return hash(a+new Date().toDateString())-hash(b+new Date().toDateString())}).slice(0,3-picks.length);
-  out+=ids.map(function(n){return '<button class="item idea" data-idea="'+esc(n)+'"><div class="th t3">'+ic("plus",26)+'</div><div><b>'+esc(n)+'</b><small>Ideia para hoje · toque para criar</small></div></button>'}).join('');
-  return out+'</div>'}
+  var have={};S.rows.forEach(function(r){if(r.source_url)have[r.source_url]=1});
+  var pool=SUGG.filter(function(x){return !have[x.u]}).map(function(x){var s=score({id:x.u,tags:x.t,category:x.c},c);if(x.m.indexOf(c.mood)>-1)s+=3;return {x:x,s:s}}).sort(function(a,b){return b.s-a.s}).slice(0,3);
+  return '<div class="sugh">'+ic(c.mood==="hot"?"sun":"cup",32)+'<div><small>'+meta+'</small><b>'+head+'</b></div></div><div class="list">'+pool.map(sugCard).join('')+'</div>'}
 async function wx(){
   var m=(S.user&&S.user.user_metadata)||{},la=m.lat||-23.6229,lo=m.lon||-46.5548;
   if(S.wx&&Date.now()-S.wx.at<1800000)return;
@@ -295,6 +317,7 @@ async function save(){
   var t=$("f_title").value.trim();if(!t){$("ferr").textContent="Dê um nome para a receita.";return}
   if(S.offline||!navigator.onLine){$("ferr").textContent="Sem internet. Conecte-se para salvar.";return}
   var row={title:t,category:$("f_cat").value,tags:tagsOf($("f_tags").value),prep_time:$("f_time").value.trim()||null,difficulty:$("f_dif").value||null,servings:$("f_por").value.trim()||null,ingredients:lines($("f_ing").value),steps:lines($("f_steps").value),notes:$("f_notes").value.trim()||null};
+  row.source_url=(S.edit&&S.edit.source_url)||null;
   var b=$("sbtn");b.disabled=true;b.textContent="Salvando…";
   try{
     var id=S.edit&&S.edit.id;
@@ -321,9 +344,10 @@ async function toggleFav(){
 }
 
 document.addEventListener("click",async function(e){
-  var b=e.target.closest("[data-go],[data-cat],[data-tag],[data-open],[data-act],[data-addtag],[data-idea]");if(!b)return;
+  var b=e.target.closest("[data-go],[data-cat],[data-tag],[data-open],[data-act],[data-addtag],[data-idea],[data-addsug]");if(!b)return;
   var d=b.dataset;
   if(d.addtag){var i=$("f_tags"),cur=tagsOf(i.value);if(cur.indexOf(d.addtag)<0)cur.push(d.addtag);i.value=cur.join(", ");return}
+  if(d.addsug!==undefined){var x=SUGG[+d.addsug];S.edit={title:x.n,category:x.c,tags:x.t,source_url:x.u};PH.cover=null;S.v="form";draw();return}
   if(d.idea){S.edit={title:d.idea};PH.cover=null;S.v="form";draw();return}
   if(d.act==="saveme"){saveMe();return}
   if(d.act==="login"){doLogin();return}
