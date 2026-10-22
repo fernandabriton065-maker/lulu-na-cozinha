@@ -1,0 +1,13 @@
+name: keepalive
+on:
+  schedule:
+    - cron: "17 9 * * *"
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Acorda o banco de dados
+        run: |
+          curl -sS -m 30 "https://yhgebrxznkkqthjedijz.supabase.co/rest/v1/recipes?select=id&limit=1" \
+            -H "apikey: sb_publishable_WWyLftD4R7j6QEV0g_sVRA_V0k_5yoK" || true
