@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#fff5ef">
+<meta name="theme-color" content="#f7eedf">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Lulu na Cozinha">
@@ -16,7 +16,7 @@
 <style>
 :root{--bg:#faf2f0;--card:#fffdfc;--ink:#3a3436;--mut:#7d6e72;--line:#eedfdc;--sage:#4f7359;--blue:#4a7592;--chip:#f1e4e1;--t1:#f6e1dd;--t2:#e1eadf;--t3:#dde9ef;--t4:#f2e8d9;--err:#b3382c;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root{--bg:#262023;--card:#322a2e;--ink:#f3e9e8;--mut:#bba8ac;--line:#463b40;--sage:#6f9a7b;--blue:#8fb8d1;--chip:#3a3135;--t1:#43343a;--t2:#33403a;--t3:#32414a;--t4:#433c33;--err:#f08a7e}}
+
 *{box-sizing:border-box}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);background-image:repeating-linear-gradient(to bottom,transparent 0 35px,rgba(150,120,125,.09) 35px 36px);color:var(--ink);font:16px/1.55 Nunito,system-ui,sans-serif;min-height:100vh}
@@ -70,7 +70,7 @@ nav button.on{color:var(--sage)}
 @media (prefers-reduced-motion:reduce){.turn{animation:none}}
 
 :root{--t1b:#f1d3cd;--t2b:#d3e2d1;--t3b:#cfe0ea;--t4b:#ecdcc5;--sh:0 8px 22px rgba(120,90,95,.12)}
-@media (prefers-color-scheme:dark){:root{--t1b:#4d3a41;--t2b:#3a4a41;--t3b:#394a54;--t4b:#4d4538;--sh:0 8px 22px rgba(0,0,0,.35)}}
+
 .t1{background:linear-gradient(150deg,var(--t1),var(--t1b))}.t2{background:linear-gradient(150deg,var(--t2),var(--t2b))}.t3{background:linear-gradient(150deg,var(--t3),var(--t3b))}.t4{background:linear-gradient(150deg,var(--t4),var(--t4b))}
 .cat,.item,.btn,.chip{transition:transform .2s,box-shadow .2s}
 .cat:hover,.item:hover{transform:translateY(-3px);box-shadow:var(--sh)}
@@ -90,7 +90,7 @@ nav button.on{color:var(--sage)}
 .acts{display:flex;gap:16px;flex-wrap:wrap;margin-top:6px}.acts .link{margin:0}.sugcard{cursor:default}
 
 :root{--bg:#fff5ef;--card:#fffdfb;--ink:#432f2a;--mut:#8a6c63;--line:#f8dcd1;--sage:#d4432c;--blue:#2677c4;--chip:#ffe6da;--t1:#ffd3e0;--t1b:#ffb8cf;--t2:#ffe2ba;--t2b:#ffc98a;--t3:#cfe7ff;--t3b:#aed4fb;--t4:#ffd3c8;--t4b:#ffb3a1;--sh:0 8px 22px rgba(212,67,44,.14)}
-@media (prefers-color-scheme:dark){:root{--bg:#2b1c19;--card:#3a2723;--ink:#fdeee8;--mut:#d2b2a8;--line:#57403a;--sage:#ff8d75;--blue:#86c0f5;--chip:#4a312c;--t1:#5a2f40;--t1b:#6b3650;--t2:#5a4326;--t2b:#6b4f2a;--t3:#2c4258;--t3b:#32506b;--t4:#5a3028;--t4b:#6b372d;--sh:0 8px 22px rgba(0,0,0,.4)}}
+
 body{background-image:radial-gradient(circle at 12% 8%,rgba(255,150,170,.22) 0 90px,transparent 91px),radial-gradient(circle at 92% 22%,rgba(120,190,255,.22) 0 110px,transparent 111px),radial-gradient(circle at 80% 78%,rgba(255,190,110,.22) 0 120px,transparent 121px),repeating-linear-gradient(to bottom,transparent 0 35px,rgba(220,150,130,.10) 35px 36px);background-attachment:fixed}
 .banner{background:linear-gradient(120deg,#ffc2d4 0%,#ffd9a6 50%,#b9dcff 100%)}
 .banner::before{background:rgba(255,255,255,.45)}.banner::after{background:#ff9d7a;opacity:.45}
@@ -104,9 +104,26 @@ body{background-image:radial-gradient(circle at 12% 8%,rgba(255,150,170,.22) 0 9
 .vthumb{width:96px;height:64px;border-radius:12px;object-fit:cover;flex:none}
 .pvnote{font-size:13.5px;color:var(--mut);margin:14px 0 0}
 @media (prefers-reduced-motion:reduce){.mic.rec{animation:none}}
+
+:root{--bg:#f7eedf;--card:#fffaf1;--line:#ecdcc4;--chip:#f4e4cb;--mut:#86695f;color-scheme:light}
+.f.miss{border-color:#ff9a3c;box-shadow:0 0 0 3px rgba(255,154,60,.25)}
+.warn{background:var(--t2);border-radius:16px;padding:12px 14px;margin:0 0 14px;font-size:14.5px}
+.banner::before{animation:float 7s ease-in-out infinite}.banner::after{animation:float 9s ease-in-out infinite reverse}
+@keyframes float{50%{transform:translateY(10px)}}
+.banner{box-shadow:var(--sh)}
+.list .item{animation:up .45s both}.list .item:nth-child(2){animation-delay:.07s}.list .item:nth-child(3){animation-delay:.14s}
+.btn{box-shadow:0 6px 16px rgba(212,67,44,.25)}
+#splash{position:fixed;inset:0;z-index:50;display:grid;place-items:center;text-align:center;background:linear-gradient(135deg,#ffc2d4,#ffd9a6 55%,#b9dcff);color:#432f2a;animation:spOut .6s ease 1.9s forwards}
+#splash svg{animation:spIn .9s cubic-bezier(.2,.9,.3,1.3) both}
+#splash h1{font-size:40px;margin:14px 0 4px;animation:up .8s .35s both}
+#splash p{margin:0;animation:up .8s .6s both}
+@keyframes spIn{from{transform:scale(.2) rotate(-90deg);opacity:0}}
+@keyframes spOut{to{opacity:0;visibility:hidden}}
+@media (prefers-reduced-motion:reduce){#splash,#splash *,.banner::before,.banner::after,.list .item{animation:none!important}#splash{display:none}}
 </style>
 </head>
 <body>
+<div id="splash" aria-hidden="true"><div><svg width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="#d4432c" stroke-width="1.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg><h1>Lulu na Cozinha</h1><p>Receitas feitas com amor</p></div></div>
 <div class="app" id="app"></div>
 <nav id="navbar" hidden><div id="nav"></div></nav>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
@@ -174,7 +191,7 @@ async function load(){
 
 /* ---------- telas ---------- */
 function login(){
-  return '<div class="login"><h1>Lulu na Cozinha</h1><p class="sub">Receitas feitas com amor</p>'+
+  return '<div class="login"><div class="banner"><h1>Lulu na Cozinha</h1><p class="sub">Receitas feitas com amor</p></div>'+
   '<input class="f" id="em" type="email" autocomplete="username" placeholder="E-mail" inputmode="email" autocapitalize="none">'+
   '<input class="f" id="pw" type="password" autocomplete="current-password" placeholder="Senha">'+
   '<div class="err" id="lerr">'+esc(S.err)+'</div><button class="btn" data-act="login" id="lbtn">Entrar</button></div>'}
@@ -224,46 +241,39 @@ async function ai(body){
   if(r.error){var m=r.error.message;try{var j=await r.error.context.json();m=j.error||m}catch(x){}throw new Error(m)}
   if(r.data&&r.data.error)throw new Error(r.data.error);
   return r.data}
-function sugCache(){try{return JSON.parse(localStorage.getItem("lulu_sug3")||"{}")}catch(e){return {}}}
-function saveSugCache(c){try{localStorage.setItem("lulu_sug3",JSON.stringify(c))}catch(e){}}
-async function getSug(x){var c=sugCache();if(c[x.n])return c[x.n];var r=await ai({action:"suggest",name:x.n});c=sugCache();c[x.n]={rec:r.recipe,img:r.image};saveSugCache(c);return c[x.n]}
+var RX={"Caldo verde":{"t":"40 min","d":"Fácil","p":"6","w":"Caldo verde","i":["4 batatas médias","1 cebola","2 dentes de alho","200 g de linguiça calabresa em rodelas","1 maço de couve fatiada bem fina","1,5 litro de água","3 colheres (sopa) de azeite","Sal e pimenta a gosto"],"s":["Refogue a cebola e o alho no azeite.","Junte as batatas em pedaços e a água. Cozinhe por 20 minutos, até desmanchar.","Bata no liquidificador ou amasse bem e volte à panela.","Frite a linguiça numa frigideira e junte ao caldo com a couve.","Cozinhe por 5 minutos, acerte o sal e sirva com um fio de azeite."]},"Canja de galinha rápida":{"t":"45 min","d":"Fácil","p":"6","w":"Canja","i":["500 g de peito de frango","1/2 xícara de arroz","2 cenouras em cubos","1 cebola","2 dentes de alho","1,5 litro de água","Cheiro-verde","Sal e limão a gosto"],"s":["Cozinhe o frango na água com a cebola e o alho por 20 minutos.","Retire o frango e desfie.","Na mesma água, cozinhe o arroz e a cenoura por 15 minutos.","Volte o frango, acerte o sal e finalize com cheiro-verde e limão."]},"Sopa de legumes com macarrão":{"t":"40 min","d":"Fácil","p":"4","w":"Sopa","i":["2 batatas","2 cenouras","1 abobrinha","1 cebola","2 dentes de alho","1 xícara de macarrão pequeno","1 litro de água","1 colher (sopa) de azeite","Sal e cheiro-verde"],"s":["Refogue a cebola e o alho no azeite.","Junte os legumes em cubos e a água. Cozinhe por 20 minutos.","Acrescente o macarrão e cozinhe por mais 10 minutos.","Acerte o sal e finalize com cheiro-verde."]},"Chocolate quente cremoso":{"t":"15 min","d":"Fácil","p":"2","w":"Chocolate quente","i":["2 xícaras de leite","100 g de chocolate meio amargo picado","1 colher (sopa) de amido de milho","1 colher (sopa) de açúcar"],"s":["Dissolva o amido em meia xícara de leite frio.","Aqueça o resto do leite com o açúcar, sem deixar ferver.","Junte o chocolate e mexa até derreter.","Acrescente o leite com amido e mexa por 3 a 4 minutos, até engrossar.","Sirva bem quente."]},"Bolo de fubá simples":{"t":"55 min","d":"Fácil","p":"10","w":"Bolo de fubá","i":["3 ovos","1 xícara de açúcar","1 xícara de fubá","1 xícara de farinha de trigo","1 xícara de leite","1/2 xícara de óleo","1 colher (sopa) de fermento","1 colher (sopa) de erva-doce (opcional)"],"s":["Bata no liquidificador os ovos, o açúcar, o óleo e o leite.","Junte o fubá e a farinha e bata mais um pouco.","Misture o fermento com uma colher.","Despeje numa forma untada e asse a 180 °C por cerca de 40 minutos."]},"Lasanha de carne moída":{"t":"1 h 30 min","d":"Médio","p":"8","w":"Lasanha","i":["500 g de massa de lasanha","500 g de carne moída","1 cebola","2 dentes de alho","2 xícaras de molho de tomate","400 g de presunto fatiado","400 g de muçarela fatiada","3 colheres (sopa) de manteiga","3 colheres (sopa) de farinha de trigo","3 xícaras de leite","Queijo ralado, noz-moscada e sal"],"s":["Refogue a cebola e o alho, doure a carne e junte o molho de tomate. Cozinhe por 10 minutos.","Molho branco: derreta a manteiga, junte a farinha e o leite aos poucos, mexendo até engrossar. Tempere com sal e noz-moscada.","Cozinhe a massa conforme a embalagem.","Monte em camadas: molho branco, massa, carne, presunto e muçarela. Repita.","Cubra com molho branco e queijo ralado. Asse a 200 °C por 30 minutos."]},"Estrogonofe de carne simples":{"t":"40 min","d":"Fácil","p":"6","w":"Estrogonofe","i":["600 g de carne em tiras","1 cebola","2 dentes de alho","2 colheres (sopa) de manteiga","1 colher (sopa) de ketchup","1 colher (sopa) de mostarda","1 xícara de molho de tomate","1 caixa de creme de leite","Sal e batata palha"],"s":["Doure a carne na manteiga com a cebola e o alho.","Junte o ketchup, a mostarda e o molho de tomate. Cozinhe por 10 minutos.","Desligue o fogo e misture o creme de leite.","Sirva com arroz e batata palha."]},"Bolo de cenoura":{"t":"1 h","d":"Fácil","p":"10","w":"Bolo de cenoura","i":["3 cenouras médias","4 ovos","1 xícara de óleo","2 xícaras de açúcar","2 e 1/2 xícaras de farinha de trigo","1 colher (sopa) de fermento","Cobertura: 3 colheres (sopa) de chocolate em pó, 1 colher (sopa) de manteiga, 1 xícara de açúcar e 1/2 xícara de leite"],"s":["Bata no liquidificador a cenoura, os ovos e o óleo.","Misture com o açúcar e a farinha. Acrescente o fermento por último.","Asse a 180 °C por cerca de 40 minutos.","Cobertura: leve tudo ao fogo até ferver por 3 minutos e cubra o bolo."]},"Torta de frango":{"t":"1 h 20 min","d":"Médio","p":"8","w":"Torta salgada","i":["Massa: 3 xícaras de farinha, 200 g de margarina, 1 ovo, 1 pitada de sal e água gelada","3 xícaras de frango cozido e desfiado","1 cebola","2 dentes de alho","2 tomates sem sementes","1 xícara de requeijão","Cheiro-verde e sal","1 gema para pincelar"],"s":["Misture os ingredientes da massa até desgrudar das mãos. Descanse 20 minutos.","Refogue a cebola, o alho e o tomate. Junte o frango, o requeijão e o cheiro-verde.","Forre uma forma com metade da massa, recheie e cubra com a outra metade.","Pincele a gema e asse a 200 °C por 40 minutos."]},"Fricassê de frango":{"t":"50 min","d":"Médio","p":"6","w":"Fricassé","i":["500 g de peito de frango cozido e desfiado","1 lata de milho","1 cebola","2 dentes de alho","2 colheres (sopa) de manteiga","2 colheres (sopa) de farinha de trigo","2 xícaras de leite","1 caixa de creme de leite","200 g de muçarela","Batata palha e sal"],"s":["Refogue a cebola e o alho e junte o frango e o milho.","Molho: derreta a manteiga, junte a farinha e o leite aos poucos até engrossar.","Misture o molho ao frango e acrescente o creme de leite.","Coloque num refratário, cubra com muçarela e batata palha.","Leve ao forno a 200 °C por 15 minutos."]},"Strogonoff de frango":{"t":"40 min","d":"Fácil","p":"6","w":"Estrogonofe","i":["600 g de peito de frango em cubos","1 cebola","2 dentes de alho","2 colheres (sopa) de manteiga","1 colher (sopa) de ketchup","1 colher (sopa) de mostarda","1 xícara de molho de tomate","1 caixa de creme de leite","Sal e batata palha"],"s":["Doure o frango na manteiga com a cebola e o alho.","Junte o ketchup, a mostarda e o molho de tomate. Cozinhe por 10 minutos.","Desligue e misture o creme de leite.","Sirva com arroz e batata palha."]},"Bolo de laranja":{"t":"55 min","d":"Fácil","p":"10","w":"Bolo de laranja","i":["3 ovos","1 xícara de óleo","2 laranjas (suco e casca ralada, sem a parte branca)","2 xícaras de açúcar","3 xícaras de farinha de trigo","1 colher (sopa) de fermento"],"s":["Bata no liquidificador os ovos, o óleo, o suco, a casca e o açúcar.","Misture com a farinha e, por último, o fermento.","Asse em forma untada a 180 °C por cerca de 40 minutos."]},"Moqueca de peixe fácil":{"t":"45 min","d":"Médio","p":"4","w":"Moqueca","i":["600 g de postas de peixe","Suco de 1 limão","1 cebola em rodelas","2 tomates em rodelas","1 pimentão em rodelas","2 dentes de alho","1 vidro de leite de coco","2 colheres (sopa) de azeite de dendê","Coentro e sal"],"s":["Tempere o peixe com limão, alho e sal. Deixe 15 minutos.","Em uma panela, monte camadas de cebola, tomate, pimentão e peixe.","Regue com o leite de coco e o dendê.","Cozinhe tampado por 20 minutos e finalize com coentro."]},"Empadão de frango delicioso":{"t":"1 h 30 min","d":"Médio","p":"10","w":"Empadão","i":["Massa: 3 xícaras de farinha, 1 xícara de margarina, 1 ovo e 1 colher (chá) de sal","3 xícaras de frango cozido e desfiado","1 cebola","2 dentes de alho","2 tomates sem sementes","1 xícara de requeijão","Azeitonas e cheiro-verde","1 gema para pincelar"],"s":["Misture a massa e descanse por 20 minutos.","Refogue cebola, alho e tomate, junte o frango, o requeijão e as azeitonas.","Forre uma forma com parte da massa, recheie e cubra com o restante.","Pincele a gema e asse a 200 °C por 40 minutos."]},"Mousse de maracujá":{"t":"20 min + 3 h","d":"Fácil","p":"8","w":"Mousse","i":["1 lata de leite condensado","1 caixa de creme de leite","1/2 xícara de suco concentrado de maracujá"],"s":["Bata tudo no liquidificador por 2 minutos.","Distribua em taças ou numa travessa.","Leve à geladeira por pelo menos 3 horas."]},"Salpicão de frango simples":{"t":"30 min","d":"Fácil","p":"8","w":"Salpicão","i":["500 g de peito de frango cozido e desfiado","1 cenoura ralada","1 maçã picada","1/2 xícara de uva-passa","1 lata de milho","1 lata de ervilha","1/2 xícara de maionese","1/2 xícara de creme de leite","Batata palha, sal e limão"],"s":["Misture o frango, a cenoura, a maçã, a uva-passa, o milho e a ervilha.","Junte a maionese e o creme de leite e tempere com sal e limão.","Gele e sirva com batata palha por cima."]},"Ceviche de tilápia":{"t":"25 min","d":"Fácil","p":"4","w":"Ceviche","i":["400 g de filé de tilápia em cubos","Suco de 6 limões","1/2 cebola roxa fatiada fina","1 pimenta dedo-de-moça sem sementes","Coentro picado","1 colher (sopa) de azeite","Sal a gosto"],"s":["Deixe o peixe no suco de limão com sal por 15 a 20 minutos na geladeira.","Escorra um pouco do líquido e junte a cebola, a pimenta, o coentro e o azeite.","Sirva gelado, logo em seguida."]},"Tabule":{"t":"30 min","d":"Fácil","p":"6","w":"Tabule","i":["1 xícara de trigo para quibe","2 tomates picados","1 pepino picado","1 cebola pequena","1 maço de hortelã","1 maço de salsinha","Suco de 2 limões","4 colheres (sopa) de azeite","Sal a gosto"],"s":["Hidrate o trigo em água morna por 30 minutos, escorra e esprema bem.","Misture com os legumes e as ervas picadas.","Tempere com limão, azeite e sal. Sirva gelado."]},"Pudim de leite condensado":{"t":"1 h 30 min + geladeira","d":"Médio","p":"10","w":"Pudim","i":["1 lata de leite condensado","2 latas (medida da lata) de leite","3 ovos","Calda: 1 xícara de açúcar e 1/2 xícara de água"],"s":["Faça a calda queimando o açúcar com a água até dourar e espalhe numa forma de furo no meio.","Bata no liquidificador o leite condensado, o leite e os ovos.","Despeje na forma e cubra com papel-alumínio.","Asse em banho-maria a 180 °C por 1 hora.","Deixe esfriar e leve à geladeira por 4 horas antes de desenformar."]}};
+function lc(k){try{return JSON.parse(localStorage.getItem(k)||"{}")}catch(e){return {}}}
+function lsave(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function wimg(){return lc("lulu_wimg")}
 function curSug(){
   var c=ctx(),have={};S.rows.forEach(function(r){if(r.source_url)have[r.source_url]=1});
   return SUGG.filter(function(x){return !have[x.u]}).map(function(x){var s=score({id:x.u,tags:x.t,category:x.c},c);if(x.m.indexOf(c.mood)>-1)s+=3;return {x:x,s:s}}).sort(function(a,b){return b.s-a.s}).slice(0,3)}
+function recOf(x){var d=RX[x.n];return {title:x.n,category:x.c,tags:x.t,prep_time:d.t,difficulty:d.d,servings:d.p,ingredients:d.i,steps:d.s}}
 function sugCard(p){
-  var x=p.x,c=sugCache()[x.n],i=SUGG.indexOf(x);
-  var th=c&&c.img?'<img src="'+esc(c.img)+'" alt="" loading="lazy" referrerpolicy="no-referrer">':ic("dish",28);
-  var sm=c?esc([c.rec.prep_time,c.rec.difficulty].filter(Boolean).join(" · ")):"Preparando a receita…";
-  return '<div class="item sugcard"><div class="th t'+(TN[x.c]||4)+'">'+th+'</div><div><b>'+esc(x.n)+'</b><small>'+sm+'</small><div class="acts"><button class="link" data-act="sugopen" data-i="'+i+'">Ver receita</button><button class="link" data-act="sugadd" data-i="'+i+'">Adicionar ao caderno</button></div></div></div>'}
+  var x=p.x,d=RX[x.n],i=SUGG.indexOf(x),u=wimg()[d.w];
+  var th=u?'<img src="'+esc(u)+'" alt="" loading="lazy" referrerpolicy="no-referrer">':ic("dish",28);
+  return '<div class="item sugcard"><div class="th t'+(TN[x.c]||4)+'">'+th+'</div><div><b>'+esc(x.n)+'</b><small>'+esc(d.t+" · "+d.d)+'</small><div class="acts"><button class="link" data-act="sugopen" data-i="'+i+'">Ver receita</button><button class="link" data-act="sugadd" data-i="'+i+'">Adicionar ao caderno</button></div></div></div>'}
 function sugHtml(){
   var c=ctx(),dia=["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"][c.w],per={morning:"de manhã",lunch:"na hora do almoço",afternoon:"à tarde",night:"à noite"}[c.per];
   var meta=dia+", "+per+(c.temp==null?"":" · "+Math.round(c.temp)+" °C");
   var head=(c.mood==="cold"?"Friozinho pede algo quentinho":c.mood==="hot"?"Calor pede algo leve e fresquinho":"Tempo ameno para cozinhar com calma")+(c.free?", sem pressa":", e prático");
   return '<div class="sugh">'+ic(c.mood==="hot"?"sun":"cup",32)+'<div><small>'+meta+'</small><b>'+head+'</b></div></div><div class="list">'+curSug().map(sugCard).join('')+'</div>'}
-async function loadSugs(){
-  if(S.ls||S.offline||!navigator.onLine)return;
-  if(S.lsFail&&Date.now()-S.lsFail<600000)return;
-  S.ls=true;
+async function loadSugImgs(){
+  if(S.li||!navigator.onLine)return;S.li=true;
   try{
-    for(var k=0;k<3;k++){
-      var next=curSug().filter(function(p){return !sugCache()[p.x.n]})[0];
-      if(!next)break;
-      await getSug(next.x);
+    var todo=curSug().map(function(p){return p.x}).filter(function(x){return wimg()[RX[x.n].w]===undefined});
+    for(var k=0;k<todo.length;k++){
+      var t=RX[todo[k].n].w,u="";
+      var r=await fetch("https://pt.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(t));
+      if(r.ok){var j=await r.json();u=(j.thumbnail&&j.thumbnail.source)||""}
+      var w=wimg();w[t]=u;lsave("lulu_wimg",w);
       if(S.v==="home"){var el=$("sug");if(el)el.innerHTML=sugHtml()}
     }
-  }catch(e){S.lsFail=Date.now()}
-  S.ls=false}
-function pvOpen(rec,img,src,back){S.pv={rec:rec,img:img,src:src};S.pvBack=back;S.v="pv";draw()}
-async function openSug(i){
-  var x=SUGG[i],c=sugCache()[x.n];
-  if(c){pvOpen(c.rec,c.img,x.u,"home");return}
-  S.pv={loading:true,name:x.n};S.pvBack="home";S.v="pv";draw();
-  try{var g=await getSug(x);if(S.v==="pv")pvOpen(g.rec,g.img,x.u,"home")}
-  catch(e){S.pv={err:nice(e),name:x.n};if(S.v==="pv")draw()}}
-async function addSug(i){
-  var x=SUGG[i];toast("Preparando a receita…");
-  try{var g=await getSug(x);await addRec(g.rec,{image:g.img,source:x.u,note:"Receita sugerida pelo app. Veja outra versão no link."})}
-  catch(e){toast(nice(e))}}
+  }catch(e){}
+  S.li=false}
+function pvOpen(rec,img,src,back,note){S.pv={rec:rec,img:img,src:src,note:note};S.pvBack=back;S.v="pv";draw()}
+function openSug(i){var x=SUGG[i];pvOpen(recOf(x),wimg()[RX[x.n].w]||null,x.u,"home","Receita tradicional do app. Quer outra versão? Abra o link.")}
+async function addSug(i){var x=SUGG[i];await addRec(recOf(x),{image:wimg()[RX[x.n].w]||null,source:x.u,note:"Receita sugerida pelo app. Veja outra versão no link."})}
 async function addRec(rec,ex){
   if(S.offline||!navigator.onLine){toast("Sem internet.");return false}
   var row={title:rec.title,category:rec.category||"Minhas receitas",tags:rec.tags||[],prep_time:rec.prep_time||null,difficulty:rec.difficulty||null,servings:rec.servings||null,ingredients:rec.ingredients||[],steps:rec.steps||[],notes:rec.notes||(ex&&ex.note)||null,image_url:(ex&&ex.image)||null,source_url:(ex&&ex.source)||null};
@@ -281,23 +291,36 @@ function pv(){
   '<h3>'+ic("list",22)+'Modo de preparo</h3><ol>'+(r.steps||[]).map(function(i){return '<li>'+esc(i)+'</li>'}).join('')+'</ol>'+
   '<button class="btn" data-act="pvadd">Adicionar ao caderno</button>'+
   (p.src?'<p><a class="link" href="'+esc(p.src)+'" target="_blank" rel="noopener">Abrir link da receita</a></p>':'')+
-  '<p class="pvnote">Receita escrita pela IA, com foto ilustrativa. Confira as medidas antes de fazer.</p>'}
+  '<p class="pvnote">'+esc(p.note||"Receita escrita pela IA, com foto ilustrativa. Confira as medidas antes de fazer.")+'</p>'}
 function busca(){
   var q=S.sr||{};
-  var o='<h2>Buscar receitas</h2><p class="sub">Digite um prato ou ingrediente. Trago a receita e vídeos.</p>'+
-  '<div class="search">'+ic("search",20)+'<input id="sq" placeholder="Ex.: costela no forno" value="'+esc(q.q||"")+'"></div><button class="btn" data-act="dosearch">Buscar</button>';
+  var o='<h2>Buscar receitas</h2><p class="sub">Digite um prato ou ingrediente.</p>'+
+  '<div class="search">'+ic("search",20)+'<input id="sq" placeholder="Ex.: costela no forno" value="'+esc(q.q||"")+'"></div><button class="btn" data-act="dosearch">Buscar vídeos</button>';
   if(q.busy)o+='<p class="sub" style="margin-top:18px">Procurando…</p>';
   if(q.err)o+='<div class="err" style="margin-top:12px">'+esc(q.err)+'</div>';
-  if(q.rec)o+='<p class="lbl">Receita</p><button class="item" data-act="sropen"><div class="th t1">'+thumb({image_url:q.img})+'</div><div><b>'+esc(q.rec.title)+'</b><small>'+esc([q.rec.prep_time,q.rec.difficulty].filter(Boolean).join(" · "))+'</small></div></button>';
+  if(q.note)o+='<p class="sub" style="margin-top:14px">'+esc(q.note)+'</p>';
+  if(q.q&&!q.busy&&!q.err)o+='<p class="lbl">Receita pela IA</p><button class="item" data-act="srai"><div class="th t1">'+ic("hat",28)+'</div><div><b>Escrever a receita de “'+esc(q.q)+'”</b><small>Toque para ver ingredientes e passo a passo</small></div></button>';
   if(q.vids&&q.vids.length)o+='<p class="lbl">Vídeos</p><div class="list">'+q.vids.map(function(v,i){return '<div class="item sugcard">'+(v.thumb?'<img class="vthumb" src="'+esc(v.thumb)+'" alt="" loading="lazy">':'')+'<div><b>'+esc(v.title)+'</b><small>'+esc(v.channel)+'</small><div class="acts"><a class="link" href="https://www.youtube.com/watch?v='+esc(v.id)+'" target="_blank" rel="noopener">Assistir</a><button class="link" data-act="vidadd" data-i="'+i+'">Adicionar ao caderno</button></div></div></div>'}).join('')+'</div>';
   o+='<h3>Importar de um link</h3><input class="f" id="iu" placeholder="Cole o endereço da receita" inputmode="url" autocapitalize="none"><button class="btn alt" data-act="doimport">Transformar em receita</button>';
   return o}
 async function doSearch(){
   var el=$("sq"),q=el?el.value.trim():"";if(!q)return;
+  var c=lc("lulu_sr"),k=q.toLowerCase(),hit=c[k];
+  if(hit&&Date.now()-hit.at<604800000){S.sr={q:q,vids:hit.v};draw();return}
   S.sr={q:q,busy:true};draw();
-  try{var r=await ai({action:"search",q:q});S.sr={q:q,rec:r.recipe,img:r.image,vids:r.videos||[],err:(!r.recipe&&!(r.videos||[]).length)?"Não encontrei nada para essa busca.":""}}
-  catch(e){S.sr={q:q,err:nice(e)}}
+  try{
+    var r=await ai({action:"search",q:q}),v=r.videos||[];
+    if(v.length){c[k]={v:v,at:Date.now()};lsave("lulu_sr",c)}
+    S.sr={q:q,vids:v,note:v.length?"":"Não apareceram vídeos agora. Você ainda pode pedir a receita pela IA."}
+  }catch(e){S.sr={q:q,err:nice(e)}}
   if(S.v==="busca")draw()}
+async function srAI(){
+  var q=S.sr&&S.sr.q;if(!q)return;
+  var c=lc("lulu_ai"),k=q.toLowerCase();
+  if(c[k]){pvOpen(c[k].rec,c[k].img,null,"busca");return}
+  toast("Escrevendo a receita…");
+  try{var r=await ai({action:"suggest",name:q});c[k]={rec:r.recipe,img:r.image};lsave("lulu_ai",c);pvOpen(r.recipe,r.image,null,"busca")}
+  catch(e){toast(nice(e))}}
 async function doImport(){
   var u=($("iu")||{}).value;u=(u||"").trim();if(!u)return;toast("Lendo a receita…");
   try{var r=await ai({action:"import",url:u});pvOpen(r.recipe,r.image,r.source_url||u,"busca")}catch(e){toast(nice(e))}}
@@ -313,14 +336,34 @@ async function recStart(){
   REC.mr.onstop=recDone;REC.mr.start();setRec(1);
   REC.t=setTimeout(recStop,90000)}
 function recStop(){clearTimeout(REC.t);if(REC.mr&&REC.mr.state!=="inactive")REC.mr.stop();if(REC.stream)REC.stream.getTracks().forEach(function(t){t.stop()})}
+var FLD={title:"o nome da receita",prep_time:"o tempo de preparo",difficulty:"o nível (dificuldade)",servings:"as porções",ingredients:"os ingredientes",steps:"o modo de preparo"};
+function ms(k){return S.miss&&S.miss.indexOf(k)>-1?" miss":""}
+function warnBox(){
+  var m=S.miss||[];if(!m.length)return "";
+  var sug=m.filter(function(k){return k==="title"||k==="difficulty"||k==="servings"}),vz=m.filter(function(k){return sug.indexOf(k)<0});
+  var t="<b>Faltou você falar:</b> "+m.map(function(k){return FLD[k]}).join(", ")+".";
+  if(sug.length)t+=" Coloquei uma sugestão em "+sug.map(function(k){return FLD[k]}).join(", ")+": confira.";
+  if(vz.length)t+=" Preencha os campos em laranja.";
+  return '<div class="warn">'+t+'</div>'}
 async function recDone(){
   setRec(2);
   try{
     var wav=await toWav(new Blob(REC.chunks,{type:REC.mr.mimeType||"audio/webm"}));
-    var r=await ai({action:"audio",audio:b64(wav)});
-    var rec=r.recipe;rec.tags=(rec.tags||[]).concat(["Minha receita"]);
-    setRec(0);await addRec(rec,{});
+    var r=await ai({action:"audio",audio:b64(wav)}),rec=r.recipe;
+    rec.tags=(rec.tags||[]).concat(["Minha receita"]);
+    S.edit=rec;S.miss=r.missing||[];PH.cover=null;S.v="form";setRec(0);draw();
+    toast("Receita organizada. Confira os campos.");
   }catch(e){setRec(0);toast(nice(e))}}
+async function testAI(){
+  var el=$("mtest");if(!el)return;el.textContent="Testando…";
+  try{
+    var r=await ai({action:"ping",deep:true});
+    el.innerHTML=["Função: funcionando","Chave Gemini: "+(r.gemini_key?"cadastrada":"FALTA"),"IA respondeu: "+(r.gemini_ok?"sim":"não"+(r.gemini_erro?" ("+esc(r.gemini_erro)+")":"")),"Chave YouTube: "+(r.youtube_key?"cadastrada":"não cadastrada (sem vídeos)")].join("<br>")
+  }catch(e){el.innerHTML="Falhou: "+esc(nice(e))+"<br><small>Detalhe técnico: "+esc(e.message||"")+"</small>"}}
+function backup(){
+  var d=JSON.stringify({exportado:new Date().toISOString(),receitas:S.rows},null,2),a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([d],{type:"application/json"}));a.download="caderno-lulu-"+new Date().toISOString().slice(0,10)+".json";
+  document.body.appendChild(a);a.click();a.remove()}
 async function toWav(blob){
   var buf=await blob.arrayBuffer(),ac=new (window.AudioContext||window.webkitAudioContext)();
   var dec=await new Promise(function(ok,no){ac.decodeAudioData(buf,ok,no)});
@@ -353,7 +396,7 @@ function me(){
   '<label class="fl" for="m_nick">Nome ou apelido</label><input class="f" id="m_nick" value="'+esc(m.apelido||"")+'" placeholder="Como devemos te chamar?">'+
   '<label class="fl" for="m_city">Cidade (para sugerir receitas pelo clima)</label><input class="f" id="m_city" value="'+esc(m.city||"São Caetano do Sul")+'">'+
   '<p style="color:var(--mut);font-size:14px">O app não usa o GPS e não pede permissão de localização. Ele usa só a cidade escrita aqui.</p>'+
-  '<div class="err" id="merr"></div><button class="btn" data-act="saveme" id="mbtn">Salvar</button><button class="btn alt" data-act="logout">Sair da conta</button>'}
+  '<div class="err" id="merr"></div><button class="btn" data-act="saveme" id="mbtn">Salvar</button><h3>Ferramentas</h3><button class="btn alt" data-act="testai">Testar a IA</button><div id="mtest" class="pvnote"></div><button class="btn alt" data-act="backup">Baixar cópia do caderno</button><button class="btn alt" data-act="logout">Sair da conta</button>'}
 async function saveMe(){
   var b=$("mbtn"),nick=$("m_nick").value.trim(),city=$("m_city").value.trim(),old=S.user.user_metadata||{},meta={apelido:nick,city:city,lat:old.lat,lon:old.lon};
   b.disabled=true;b.textContent="Salvando…";
@@ -395,16 +438,16 @@ function form(){
   var r=S.edit||{};
   var cu=r.photo_path&&S.urls[r.photo_path];
   function opt(v,cur){return '<option'+(v===cur?' selected':'')+'>'+v+'</option>'}
-  return '<button class="back" data-act="cancel">'+ic("back",18)+'Cancelar</button><h2>'+(r.id?'Editar receita':'Nova receita')+'</h2><p class="sub">Conte a receita falando ou preencha à mão.</p>'+(r.id?'':'<div id="audio">'+audioBox()+'</div><p class="lbl" style="text-align:center">Ou preencha à mão</p>')+
-  '<label class="fl" for="f_title">Nome da receita</label><input class="f" id="f_title" value="'+esc(r.title)+'">'+
+  return '<button class="back" data-act="cancel">'+ic("back",18)+'Cancelar</button><h2>'+(r.id?'Editar receita':'Nova receita')+'</h2><p class="sub">Conte a receita falando ou preencha à mão.</p>'+warnBox()+(r.id?'':'<div id="audio">'+audioBox()+'</div><p class="lbl" style="text-align:center">Ou preencha à mão</p>')+
+  '<label class="fl" for="f_title">Nome da receita</label><input class="f'+ms("title")+'" id="f_title" value="'+esc(r.title)+'">'+
   '<label class="fl" for="f_cat">Categoria</label><select class="f" id="f_cat">'+CATS.map(function(c){return opt(c[0],r.category||"Minhas receitas")}).join('')+'</select>'+
-  '<div class="row"><div><label class="fl" for="f_time">Tempo</label><input class="f" id="f_time" placeholder="40 min" value="'+esc(r.prep_time)+'"></div>'+
-  '<div><label class="fl" for="f_dif">Nível</label><select class="f" id="f_dif"><option value="">—</option>'+["Fácil","Médio","Difícil"].map(function(v){return opt(v,r.difficulty)}).join('')+'</select></div>'+
-  '<div><label class="fl" for="f_por">Porções</label><input class="f" id="f_por" placeholder="8" value="'+esc(r.servings)+'"></div></div>'+
+  '<div class="row"><div><label class="fl" for="f_time">Tempo</label><input class="f'+ms("prep_time")+'" id="f_time" placeholder="40 min" value="'+esc(r.prep_time)+'"></div>'+
+  '<div><label class="fl" for="f_dif">Nível</label><select class="f'+ms("difficulty")+'" id="f_dif"><option value="">—</option>'+["Fácil","Médio","Difícil"].map(function(v){return opt(v,r.difficulty)}).join('')+'</select></div>'+
+  '<div><label class="fl" for="f_por">Porções</label><input class="f'+ms("servings")+'" id="f_por" placeholder="8" value="'+esc(r.servings)+'"></div></div>'+
   '<label class="fl" for="f_tags">Etiquetas (separe por vírgula)</label><input class="f" id="f_tags" placeholder="Bolos, Festa" value="'+esc((r.tags||[]).join(", "))+'">'+
   '<div class="chips wrap">'+TAGS.map(function(t){return '<button type="button" class="chip" data-addtag="'+esc(t)+'">'+esc(t)+'</button>'}).join('')+'</div>'+
-  '<label class="fl" for="f_ing">Ingredientes (um por linha)</label><textarea class="f" id="f_ing" rows="6">'+esc((r.ingredients||[]).join("\n"))+'</textarea>'+
-  '<label class="fl" for="f_steps">Modo de preparo (um passo por linha)</label><textarea class="f" id="f_steps" rows="6">'+esc((r.steps||[]).join("\n"))+'</textarea>'+
+  '<label class="fl" for="f_ing">Ingredientes (um por linha)</label><textarea class="f'+ms("ingredients")+'" id="f_ing" rows="6">'+esc((r.ingredients||[]).join("\n"))+'</textarea>'+
+  '<label class="fl" for="f_steps">Modo de preparo (um passo por linha)</label><textarea class="f'+ms("steps")+'" id="f_steps" rows="6">'+esc((r.steps||[]).join("\n"))+'</textarea>'+
   '<label class="fl" for="f_notes">Minhas observações</label><textarea class="f" id="f_notes" rows="3">'+esc(r.notes)+'</textarea>'+
   '<label class="fl">Foto da receita</label><img class="prev" id="prev_cover" alt=""'+(cu?' src="'+cu+'" style="display:block"':'')+'>'+
   '<label class="box">'+ic("cam",22)+'Tirar ou escolher foto<input type="file" id="f_cover" accept="image/*" hidden></label>'+
@@ -416,7 +459,7 @@ function nav(){
 function draw(){
   var f={login:login,home:home,list:list,recipe:recipe,form:form,favs:favs,me:me,pv:pv,busca:busca};
   var a=$("app");a.innerHTML=f[S.v]();a.classList.remove("turn");void a.offsetWidth;a.classList.add("turn");
-  $("navbar").hidden=(S.v==="login");document.body.classList.toggle("nn",S.v==="login");if(S.v!=="login")nav();if(S.v==="home"){wx();loadSugs()}
+  $("navbar").hidden=(S.v==="login");document.body.classList.toggle("nn",S.v==="login");if(S.v!=="login")nav();if(S.v==="home"){wx();loadSugImgs()}
   window.scrollTo(0,0);bindExtra();
   var q=$("q");if(q){q.addEventListener("input",function(){S.q=q.value});q.addEventListener("keydown",function(e){if(e.key==="Enter"&&S.q.trim()){S.cat=null;S.tag=null;S.v="list";draw()}})}
 }
@@ -429,7 +472,7 @@ function shrink(file,max){
     img.onerror=function(){rej(new Error("foto"))};img.src=u})
 }
 async function up(path,blob){var r=await sb.storage.from("recipe-photos").upload(path,blob,{upsert:true,contentType:"image/jpeg"});if(r.error)throw r.error}
-function nice(e){var m=(e&&e.message)||"";if(/Invalid login/i.test(m))return "E-mail ou senha incorretos.";if(/nao_receita/.test(m))return "Isso não parece ser uma receita.";if(/^ia/.test(m))return "A IA está ocupada agora. Tente de novo em instantes.";if(/non-2xx|Failed to send|auth/i.test(m))return "Não consegui falar com a IA. Confira se a função foi publicada.";if(/fetch|network/i.test(m))return "Sem conexão com a internet.";return "Algo deu errado. Tente de novo."}
+function nice(e){var m=(e&&e.message)||"";if(/Invalid login/i.test(m))return "E-mail ou senha incorretos.";if(/nao_receita/.test(m))return "Isso não parece ser uma receita.";if(/^ia_limite/.test(m))return "A IA atingiu o limite de hoje. Tente amanhã ou preencha à mão.";if(/^ia_sem_chave/.test(m))return "Falta a chave da IA nos Secrets do Supabase.";if(/^ia/.test(m))return "A IA não respondeu agora. Tente de novo em instantes.";if(/^auth/.test(m))return "A IA não reconheceu seu login. Saia e entre de novo.";if(/Failed to send/i.test(m))return "Não cheguei à função. Confira se ela está publicada como lulu-ai, com Verify JWT desligado.";if(/non-2xx|not found|404|401|Invalid JWT/i.test(m))return "A função respondeu com erro ("+m.slice(0,50)+").";if(/fetch|network/i.test(m))return "Sem conexão com a internet.";return "Algo deu errado. Tente de novo."}
 
 async function doLogin(){
   var b=$("lbtn");b.disabled=true;b.textContent="Entrando…";
@@ -449,7 +492,7 @@ async function save(){
     if(id){row.updated_at=new Date().toISOString();var u=await sb.from("recipes").update(row).eq("id",id);if(u.error)throw u.error}
     else{var i=await sb.from("recipes").insert(row).select().single();if(i.error)throw i.error;id=i.data.id}
     if(PH.cover){var p=S.user.id+"/"+id+"/capa.jpg";await up(p,PH.cover);var u2=await sb.from("recipes").update({photo_path:p}).eq("id",id);if(u2.error)throw u2.error;delete S.urls[p]}
-    PH.cover=null;await load();S.id=id;S.v="recipe";draw();toast("Receita salva");
+    PH.cover=null;S.miss=null;await load();S.id=id;S.v="recipe";draw();toast("Receita salva");
   }catch(e){b.disabled=false;b.textContent="Salvar receita";$("ferr").textContent=nice(e)}
 }
 async function del(){
@@ -474,7 +517,9 @@ document.addEventListener("click",async function(e){
   if(d.addtag){var i=$("f_tags"),cur=tagsOf(i.value);if(cur.indexOf(d.addtag)<0)cur.push(d.addtag);i.value=cur.join(", ");return}
   if(d.act==="sugopen"){openSug(+d.i);return}
   if(d.act==="sugadd"){addSug(+d.i);return}
-  if(d.act==="sropen"){pvOpen(S.sr.rec,S.sr.img,null,"busca");return}
+  if(d.act==="srai"){srAI();return}
+  if(d.act==="testai"){testAI();return}
+  if(d.act==="backup"){backup();return}
   if(d.act==="pvadd"){var p=S.pv;if(p&&p.rec)addRec(p.rec,{image:p.img,source:p.src,note:p.src?"Importada de um link.":null});return}
   if(d.act==="pvback"){S.v=S.pvBack||"home";draw();return}
   if(d.act==="vidadd"){vidAdd(+d.i);return}
@@ -489,11 +534,11 @@ document.addEventListener("click",async function(e){
   if(d.act==="save"){save();return}
   if(d.act==="del"){del();return}
   if(d.act==="edit"){S.edit=byId(S.id);PH.cover=null;S.v="form";draw();return}
-  if(d.act==="cancel"){S.v=S.edit&&S.edit.id?"recipe":"home";draw();return}
+  if(d.act==="cancel"){S.miss=null;S.v=S.edit&&S.edit.id?"recipe":"home";draw();return}
   if(d.cat){S.cat=d.cat;S.tag=null;S.q="";S.v="list"}
   else if(d.tag){S.tag=d.tag;S.cat=null;S.q="";S.v="list"}
   else if(d.open){S.id=d.open;S.v="recipe"}
-  else if(d.go){S.v=d.go;if(S.v==="home"){S.cat=null;S.tag=null;S.q=""}if(S.v==="add"){S.edit=null;PH.cover=null;S.v="form"}}
+  else if(d.go){S.v=d.go;if(S.v==="home"){S.cat=null;S.tag=null;S.q=""}if(S.v==="add"){S.edit=null;S.miss=null;PH.cover=null;S.v="form"}}
   draw();
 });
 document.addEventListener("keydown",function(e){if(e.key==="Enter"&&S.v==="login"&&(e.target.id==="pw"||e.target.id==="em"))doLogin()});
@@ -507,6 +552,7 @@ document.addEventListener("change",async function(e){
 });
 
 (async function init(){
+  try{if(sessionStorage.getItem("lulu_sp")){var sp=$("splash");if(sp)sp.remove()}else{sessionStorage.setItem("lulu_sp","1");setTimeout(function(){var sp=$("splash");if(sp)sp.remove()},2700)}}catch(e){var sp2=$("splash");if(sp2)sp2.remove()}
   if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(function(){});
   var r=await sb.auth.getSession();
   if(r.data&&r.data.session){S.user=r.data.session.user;await start()}else{S.v="login";draw()}
