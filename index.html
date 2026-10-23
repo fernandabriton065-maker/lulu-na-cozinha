@@ -155,6 +155,7 @@ h1{font-size:40px;font-weight:600}
 .cktop{display:flex;justify-content:space-between;align-items:center;gap:12px}.cktop button{border:0;background:#fff;border-radius:999px;width:42px;height:42px;font-size:24px;cursor:pointer;flex:none}
 .ckt{color:var(--mut);margin:24px 0 8px}.ckx{flex:1;font:500 clamp(24px,6vw,36px)/1.35 Sora,system-ui,sans-serif;white-space:pre-line;overflow:auto}
 .ckbar{display:grid;grid-template-columns:1fr 1.4fr;gap:12px;padding-top:12px}.ckbar button{border:0;border-radius:999px;padding:18px;font:600 18px Inter,sans-serif;background:#fff;color:#1f1b1a;cursor:pointer}.ckbar .pri{background:#1f1b1a;color:#fff}.ckbar button[disabled]{opacity:.4}
+.item{position:relative}.hbtn{position:absolute;right:10px;top:10px;padding:6px;color:#c0476a;cursor:pointer;line-height:0}.item>div:nth-child(2){padding-right:34px}
 </style>
 </head>
 <body>
@@ -168,7 +169,7 @@ var SB_KEY="sb_publishable_WWyLftD4R7j6QEV0g_sVRA_V0k_5yoK";
 var RECOV=/type=recovery/.test(location.hash);
 var sb=supabase.createClient(SB_URL,SB_KEY);
 
-var VERSION="6 · 23/10";
+var VERSION="7 · 24/10";
 var I={
 home:'<path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/>',
 plus:'<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
@@ -232,7 +233,7 @@ function login(){
   '<input class="f" id="em" type="email" autocomplete="username" placeholder="E-mail" inputmode="email" autocapitalize="none">'+
   '<input class="f" id="pw" type="password" autocomplete="current-password" placeholder="Senha">'+
   '<div class="err" id="lerr">'+esc(S.err)+'</div><button class="btn" data-act="login" id="lbtn">Entrar</button><p class="pvnote" style="text-align:center"><button class="link" data-act="forgot">Esqueci a senha</button> · <button class="link" data-act="hardrefresh">Atualizar o app</button><br>Versão '+VERSION+'</p></div>'}
-function item(r){return '<button class="item" data-open="'+r.id+'"><div class="th t'+(TN[r.category]||4)+'">'+thumb(r)+'</div><div><b>'+esc(r.title)+'</b><small>'+esc([r.prep_time,r.difficulty].filter(Boolean).join(" · "))+'</small></div></button>'}
+function item(r){return '<button class="item" data-open="'+r.id+'"><div class="th t'+(TN[r.category]||4)+'">'+thumb(r)+'</div><div><b>'+esc(r.title)+'</b><small>'+esc([r.prep_time,r.difficulty].filter(Boolean).join(" · "))+'</small></div><span class="hbtn" data-favid="'+r.id+'" role="button" aria-label="Favoritar">'+ic("heart",22,r.is_favorite)+'</span></button>'}
 function hash(t){var h=0;for(var i=0;i<t.length;i++)h=(h*31+t.charCodeAt(i))|0;return Math.abs(h)}
 function mins(t){if(!t)return null;var h=/(\d+)\s*h/i.exec(t),m=/(\d+)\s*min/i.exec(t),v=(h?+h[1]*60:0)+(m?+m[1]:0);return v||null}
 function ctx(){var d=new Date(),h=d.getHours(),w=d.getDay(),t=S.wx?S.wx.t:null;
@@ -336,7 +337,7 @@ function busca(){
   if(q.busy)o+='<p class="sub" style="margin-top:18px">Procurando…</p>';
   if(q.err)o+='<div class="err" style="margin-top:12px">'+esc(q.err)+'</div>';
   if(q.note)o+='<p class="sub" style="margin-top:14px">'+esc(q.note)+'</p>';
-  if(q.q&&!q.busy&&!q.err)o+='<p class="lbl">Receita pela IA</p><button class="item" data-act="srai"><div class="th t1">'+ic("hat",28)+'</div><div><b>Escrever a receita de “'+esc(q.q)+'”</b><small>Toque para ver ingredientes e passo a passo</small></div></button>';
+  if(q.q&&!q.busy&&!q.err&&q.food!==false)o+='<p class="lbl">Receita pela IA</p><button class="item" data-act="srai"><div class="th t1">'+ic("hat",28)+'</div><div><b>Escrever a receita de “'+esc(q.q)+'”</b><small>Toque para ver ingredientes e passo a passo</small></div></button>';
   if(q.vids&&q.vids.length)o+='<p class="lbl">Vídeos</p><div class="list">'+q.vids.map(function(v,i){return '<div class="item sugcard">'+(v.thumb?'<img class="vthumb" src="'+esc(v.thumb)+'" alt="" loading="lazy">':'')+'<div><b>'+esc(v.title)+'</b><small>'+esc(v.channel)+'</small><div class="acts"><button class="link" data-act="vid" data-id="'+esc(v.id)+'">Assistir aqui</button><button class="link" data-act="vidadd" data-i="'+i+'">Adicionar ao caderno</button></div></div></div>'}).join('')+'</div>';
   o+='<h3>Importar de um link</h3><input class="f" id="iu" placeholder="Cole o endereço da receita" inputmode="url" autocapitalize="none"><button class="btn alt" data-act="doimport">Transformar em receita</button>';
   return o}
@@ -348,7 +349,7 @@ async function doSearch(){
   try{
     var r=await ai({action:"search",q:q}),v=r.videos||[];
     if(v.length){c[k]={v:v,at:Date.now()};lsave("lulu_sr",c)}
-    S.sr={q:q,vids:v,note:v.length?"":"Não apareceram vídeos agora. Você ainda pode pedir a receita pela IA."}
+    S.sr={q:q,vids:v,food:r.food,note:v.length?"":(r.food===false?"Não encontrei receitas para isso. Digite o nome de um prato, ingrediente ou bebida.":"Não apareceram vídeos agora. Você ainda pode pedir a receita pela IA.")}
   }catch(e){S.sr={q:q,err:nice(e)}}
   if(S.v==="busca")draw()}
 async function srAI(){
@@ -419,9 +420,9 @@ async function wx(){
   try{var r=await fetch("https://api.open-meteo.com/v1/forecast?latitude="+la+"&longitude="+lo+"&current=temperature_2m&timezone=auto"),j=await r.json();S.wx={t:j.current.temperature_2m,at:Date.now()}}catch(e){}
   var el=$("sug");if(el&&S.v==="home")el.innerHTML=sugHtml()}
 function home(){
-  var nk=(S.user.user_metadata||{}).apelido,n=S.rows.length;
+  var um=S.user.user_metadata||{},nk=um.apelido,n=S.rows.length;
   return (S.offline?'<div class="off">Sem internet: mostrando as receitas salvas no aparelho.</div>':'')+
-  '<div class="banner"><p class="hi">'+greet()+(nk?', '+esc(nk):'')+'</p><h1>Lulu na Cozinha</h1><p class="sub">Receitas feitas com amor</p>'+(nk?'':'<button class="link" data-go="me" style="margin:12px 0 0">Como devemos te chamar? Toque aqui</button>')+'</div>'+
+  '<div class="banner"><p class="hi">'+greet()+(nk?', '+esc(nk):'')+'</p><h1>Lulu na Cozinha</h1><p class="sub">Receitas feitas com amor</p>'+(nk?'':'<button class="link" data-go="me" style="margin:12px 0 0">Como devemos te chamar? Toque aqui</button>')+(um.city?'':'<br><button class="link" data-go="me" style="margin:6px 0 0">Onde você está? Escolha sua cidade</button>')+'</div>'+
   '<div class="search">'+ic("search",20)+'<input id="q" placeholder="Buscar uma receita" value="'+esc(S.q)+'"></div>'+
   '<p class="lbl">Para hoje</p><div id="sug">'+sugHtml()+'</div>'+
   '<p class="lbl">Seu caderno</p><div class="grid">'+CATS.map(function(c){var k=S.rows.filter(function(r){return inCat(r,c[0])}).length;return '<button class="cat t'+c[3]+'" data-cat="'+c[0]+'">'+ic(c[1],34)+'<div><b>'+c[0]+'</b><small>'+(k?k+(k===1?" receita":" receitas"):c[2])+'</small></div></button>'}).join('')+'</div>'+
@@ -431,14 +432,14 @@ function me(){
   var m=S.user.user_metadata||{};
   return '<h2>Perfil</h2><p class="sub">Como você quer ser chamada e onde você está.</p>'+
   '<label class="fl" for="m_nick">Nome ou apelido</label><input class="f" id="m_nick" value="'+esc(m.apelido||"")+'" placeholder="Como devemos te chamar?">'+
-  '<label class="fl" for="m_city">Cidade (para sugerir receitas pelo clima)</label><input class="f" id="m_city" value="'+esc(m.city||"São Caetano do Sul")+'">'+
+  '<label class="fl" for="m_city">Cidade (para sugerir receitas pelo clima)</label><input class="f" id="m_city" value="'+esc(m.city||"São Caetano do Sul")+'" autocomplete="off" placeholder="Comece a digitar a cidade"><div id="m_sug"></div>'+
   '<p style="color:var(--mut);font-size:14px">O app não usa o GPS e não pede permissão de localização. Ele usa só a cidade escrita aqui.</p>'+
   '<div class="err" id="merr"></div><button class="btn" data-act="saveme" id="mbtn">Salvar</button><h3>Ferramentas</h3><button class="btn alt" data-act="testai">Testar a IA</button><div id="mtest" class="pvnote"></div><button class="btn alt" data-act="backup">Baixar cópia do caderno</button><button class="btn alt" data-act="hardrefresh">Atualizar o app</button><button class="btn alt" data-act="logout">Sair da conta</button><p class="pvnote" style="text-align:center">Versão '+VERSION+'</p>'}
 async function saveMe(){
   var b=$("mbtn"),nick=$("m_nick").value.trim(),city=$("m_city").value.trim(),old=S.user.user_metadata||{},meta={apelido:nick,city:city,lat:old.lat,lon:old.lon};
   b.disabled=true;b.textContent="Salvando…";
   try{
-    if(city&&(city!==old.city||!old.lat)){
+    if(S.pick&&S.pick.name===city){meta.lat=S.pick.lat;meta.lon=S.pick.lon;meta.city=S.pick.name}else if(city&&(city!==old.city||!old.lat)){
       var g=await fetch("https://geocoding-api.open-meteo.com/v1/search?name="+encodeURIComponent(city)+"&count=1&language=pt"),j=await g.json();
       if(!j.results||!j.results.length){$("merr").textContent="Não encontrei essa cidade.";b.disabled=false;b.textContent="Salvar";return}
       meta.lat=j.results[0].latitude;meta.lon=j.results[0].longitude;meta.city=j.results[0].name}
@@ -543,6 +544,18 @@ document.addEventListener("click",function(e){
   if(k==="x"||(k==="n"&&CK.i>=CK.p.length-1)){var d=$("cook");if(d)d.remove();CK=null;wakeOff();return}
   CK.i+=k==="n"?1:-1;cookDraw()});
 document.addEventListener("visibilitychange",function(){if(CK&&document.visibilityState==="visible")wakeOn()});
+var GT=null;
+function geoSearch(q){
+  var box=$("m_sug");if(!box)return;
+  if(q.length<2){box.innerHTML="";return}
+  fetch("https://geocoding-api.open-meteo.com/v1/search?name="+encodeURIComponent(q)+"&count=6&language=pt&format=json").then(function(r){return r.json()}).then(function(j){
+    S.geo=j.results||[];
+    box.innerHTML=S.geo.map(function(x,i){return '<button class="shopi" data-pick="'+i+'"><span>'+esc(x.name)+'<br><small style="color:var(--mut)">'+esc([x.admin1,x.country].filter(Boolean).join(", "))+'</small></span></button>'}).join("")
+  }).catch(function(){})}
+function pickGeo(i){var x=(S.geo||[])[i];if(!x)return;S.pick={name:x.name,lat:x.latitude,lon:x.longitude};var c=$("m_city");if(c)c.value=x.name;var b=$("m_sug");if(b)b.innerHTML=""}
+document.addEventListener("input",function(e){if(e.target.id==="m_city"){S.pick=null;clearTimeout(GT);var v=e.target.value.trim();GT=setTimeout(function(){geoSearch(v)},300)}});
+async function favById(id){var r=byId(id);if(!r)return;var y=window.scrollY,v=!r.is_favorite;r.is_favorite=v;draw();window.scrollTo(0,y);
+  var u=await sb.from("recipes").update({is_favorite:v}).eq("id",id);if(u.error){r.is_favorite=!v;draw();toast(nice(u.error))}}
 async function madeToday(){
   var r=byId(S.id),log=(r.made_log||[]).concat([new Date().toISOString()]);
   var u=await sb.from("recipes").update({made_log:log}).eq("id",r.id);
@@ -553,7 +566,7 @@ function recipe(){
   var ru=r.result_photo_path&&S.urls[r.result_photo_path],base=parseInt(r.servings,10)||0,cur=curServ(r),f=base?cur/base:1;
   var ings=r.ingredients||[],sc=f===1?ings:scaleIng(ings,f),vid=ytId(r.source_url),log=r.made_log||[];
   var made=log.length?'Feita '+log.length+(log.length===1?' vez':' vezes')+' · última em '+new Date(log[log.length-1]).toLocaleDateString("pt-BR"):'';
-  return '<div class="top"><button class="back" data-go="list">'+ic("back",18)+'Voltar</button><button class="link" data-act="fav" aria-label="Favoritar" style="color:var(--sage)">'+ic("heart",26,r.is_favorite)+'</button></div><div class="rec"><div class="rl">'+
+  return '<div class="top"><button class="back" data-go="list">'+ic("back",18)+'Voltar</button><button class="link" data-act="fav" aria-label="Favoritar" style="color:#c0476a">'+ic("heart",28,r.is_favorite)+'</button></div><div class="rec"><div class="rl">'+
   '<h2>'+esc(r.title)+'</h2><div class="hero t'+(TN[r.category]||4)+'">'+thumb(r,true)+'</div>'+
   '<div class="facts"><div>'+ic("clock",22)+'<b>'+esc(r.prep_time||"—")+'</b><small>Tempo</small></div><div>'+ic("hat",22)+'<b>'+esc(r.difficulty||"—")+'</b><small>Dificuldade</small></div><div>'+ic("dish",22)+'<b>'+esc(cur||r.servings||"—")+'</b><small>Porções</small></div></div>'+
   ((r.tags||[]).length?'<div class="chips wrap" style="margin-top:14px">'+r.tags.map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join('')+'</div>':'')+
@@ -617,7 +630,7 @@ async function doLogin(){
   if(r.error){S.err=nice(r.error);draw();return}
   S.err="";S.user=r.data.user;await start();
 }
-async function start(){await load();S.v="home";draw()}
+async function start(){await load();var ask=false;try{ask=!((S.user.user_metadata||{}).city)&&!localStorage.getItem("lulu_asked");if(ask)localStorage.setItem("lulu_asked","1")}catch(e){}S.v=ask?"me":"home";draw()}
 async function save(){
   var t=$("f_title").value.trim();if(!t){$("ferr").textContent="Dê um nome para a receita.";return}
   if(S.offline||!navigator.onLine){$("ferr").textContent="Sem internet. Conecte-se para salvar.";return}
@@ -649,7 +662,7 @@ async function toggleFav(){
 }
 
 document.addEventListener("click",async function(e){
-  var b=e.target.closest("[data-go],[data-cat],[data-tag],[data-open],[data-act],[data-addtag],[data-idea]");if(!b)return;
+  var b=e.target.closest("[data-go],[data-cat],[data-tag],[data-open],[data-act],[data-addtag],[data-idea],[data-favid],[data-pick]");if(!b)return;
   var d=b.dataset;
   if(d.addtag){var i=$("f_tags"),cur=tagsOf(i.value);if(cur.indexOf(d.addtag)<0)cur.push(d.addtag);i.value=cur.join(", ");return}
   if(d.act==="sugopen"){openSug(+d.i);return}
@@ -678,6 +691,8 @@ document.addEventListener("click",async function(e){
   if(d.act==="doimport"){doImport();return}
   if(d.act==="rec"){if(S.rec===1)recStop();else if(!S.rec)recStart();return}
   if(d.idea){S.edit={title:d.idea};PH.cover=null;S.v="form";draw();return}
+  if(d.favid){favById(d.favid);return}
+  if(d.pick!==undefined){pickGeo(+d.pick);return}
   if(d.act==="saveme"){saveMe();return}
   if(d.act==="login"){doLogin();return}
   if(d.act==="logout"){await sb.auth.signOut();S.user=null;S.rows=[];S.v="login";draw();return}
