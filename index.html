@@ -156,6 +156,9 @@ h1{font-size:40px;font-weight:600}
 .ckt{color:var(--mut);margin:24px 0 8px}.ckx{flex:1;font:500 clamp(24px,6vw,36px)/1.35 Sora,system-ui,sans-serif;white-space:pre-line;overflow:auto}
 .ckbar{display:grid;grid-template-columns:1fr 1.4fr;gap:12px;padding-top:12px}.ckbar button{border:0;border-radius:999px;padding:18px;font:600 18px Inter,sans-serif;background:#fff;color:#1f1b1a;cursor:pointer}.ckbar .pri{background:#1f1b1a;color:#fff}.ckbar button[disabled]{opacity:.4}
 .item{position:relative}.hbtn{position:absolute;right:10px;top:10px;padding:6px;color:#c0476a;cursor:pointer;line-height:0}.item>div:nth-child(2){padding-right:34px}
+.plr{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}.plr .link{margin:0;font-size:13px}
+.ckact{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:10px 0}.ckact button{border:0;border-radius:999px;padding:14px 18px;background:#1f1b1a;color:#fff;font:600 15px Inter,sans-serif;cursor:pointer}.ckact a{color:#4b5bd6;font-size:14px}
+#cktm{margin-top:10px;min-height:28px}.cktime{font:600 22px Sora,sans-serif}.cklink{border:0;background:none;color:#4b5bd6;cursor:pointer;font:inherit}.ckalarm{border:0;border-radius:16px;padding:14px;background:#c0476a;color:#fff;font:600 16px Inter,sans-serif;width:100%;animation:pulse 1s infinite}
 </style>
 </head>
 <body>
@@ -169,7 +172,7 @@ var SB_KEY="sb_publishable_WWyLftD4R7j6QEV0g_sVRA_V0k_5yoK";
 var RECOV=/type=recovery/.test(location.hash);
 var sb=supabase.createClient(SB_URL,SB_KEY);
 
-var VERSION="8 · 24/10";
+var VERSION="9 · 24/10";
 var I={
 home:'<path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/>',
 plus:'<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
@@ -392,15 +395,30 @@ async function doImport(){
 async function vidAdd(i){var v=(S.sr.vids||[])[i];if(!v)return;await addRec({title:v.title,category:"Minhas receitas",tags:[],notes:"Vídeo do YouTube de "+v.channel},{image:v.thumb,source:"https://www.youtube.com/watch?v="+v.id})}
 function audioBox(){var st=S.rec||0;
   return '<button class="mic'+(st===1?' rec':'')+'" data-act="rec" aria-label="Gravar"'+(st===2?' disabled':'')+'>'+ic(st===1?"stop":"mic",40)+'</button><p class="hint">'+(st===0?'Toque e conte a receita falando':st===1?'Gravando… toque para terminar':'Organizando… pode levar até 30 segundos')+'</p>'}
-var REC={mr:null,chunks:[],stream:null,t:null};
+var REC={ctx:null,src:null,proc:null,stream:null,buf:[],n:0,t:null,iv:null,t0:0,acc:0,cnt:0};
 function setRec(n){S.rec=n;var a=$("audio");if(a)a.innerHTML=audioBox()}
+function fmtT(x){var m=Math.floor(x/60),q=Math.floor(x%60);return (m<10?"0":"")+m+":"+(q<10?"0":"")+q}
 async function recStart(){
-  try{REC.stream=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){toast("Permita o microfone para gravar.");return}
-  REC.chunks=[];REC.mr=new MediaRecorder(REC.stream);
-  REC.mr.ondataavailable=function(e){if(e.data&&e.data.size)REC.chunks.push(e.data)};
-  REC.mr.onstop=recDone;REC.mr.start();setRec(1);
-  REC.t=setTimeout(recStop,90000)}
-function recStop(){clearTimeout(REC.t);if(REC.mr&&REC.mr.state!=="inactive")REC.mr.stop();if(REC.stream)REC.stream.getTracks().forEach(function(t){t.stop()})}
+  try{REC.stream=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true}})}catch(e){toast("Permita o microfone para gravar.");return}
+  var AC=window.AudioContext||window.webkitAudioContext;
+  try{REC.ctx=new AC({sampleRate:16000})}catch(e){REC.ctx=new AC()}
+  var ratio=REC.ctx.sampleRate/16000;REC.buf=[];REC.n=0;REC.acc=0;REC.cnt=0;
+  REC.src=REC.ctx.createMediaStreamSource(REC.stream);
+  REC.proc=REC.ctx.createScriptProcessor(4096,1,1);
+  REC.proc.onaudioprocess=function(e){
+    var d=e.inputBuffer.getChannelData(0),out=new Int16Array(Math.ceil(d.length/ratio)+1),k=0;
+    for(var i=0;i<d.length;i++){REC.acc+=d[i];REC.cnt++;if(REC.cnt>=ratio){var v=Math.max(-1,Math.min(1,REC.acc/REC.cnt));out[k++]=v<0?v*32768:v*32767;REC.acc=0;REC.cnt=0}}
+    REC.buf.push(out.subarray(0,k));REC.n+=k};
+  REC.src.connect(REC.proc);REC.proc.connect(REC.ctx.destination);
+  REC.t0=Date.now();setRec(1);
+  REC.iv=setInterval(function(){var h=document.querySelector("#audio .hint");if(h)h.textContent="Gravando… "+fmtT((Date.now()-REC.t0)/1000)+" · toque para terminar"},1000);
+  REC.t=setTimeout(recStop,720000)}
+function recStop(){
+  clearTimeout(REC.t);clearInterval(REC.iv);
+  try{REC.proc.disconnect();REC.src.disconnect()}catch(e){}
+  if(REC.stream)REC.stream.getTracks().forEach(function(t){t.stop()});
+  try{REC.ctx.close()}catch(e){}
+  recDone()}
 var FLD={title:"o nome da receita",prep_time:"o tempo de preparo",difficulty:"o nível (dificuldade)",servings:"as porções",ingredients:"os ingredientes",steps:"o modo de preparo"};
 function ms(k){return S.miss&&S.miss.indexOf(k)>-1?" miss":""}
 function warnBox(){
@@ -410,15 +428,26 @@ function warnBox(){
   if(sug.length)t+=" Coloquei uma sugestão em "+sug.map(function(k){return FLD[k]}).join(", ")+": confira.";
   if(vz.length)t+=" Preencha os campos em laranja.";
   return '<div class="warn">'+t+'</div>'}
+function loadLame(){return new Promise(function(ok,no){if(window.lamejs)return ok();var sc=document.createElement("script");sc.src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js";sc.onload=ok;sc.onerror=function(){no(new Error("Não consegui carregar o conversor de áudio."))};document.head.appendChild(sc)})}
+async function toMp3(){
+  await loadLame();
+  var enc=new lamejs.Mp3Encoder(1,16000,32),parts=[],all=new Int16Array(REC.n),o=0;
+  REC.buf.forEach(function(b){all.set(b,o);o+=b.length});REC.buf=[];
+  for(var i=0;i<all.length;i+=1152){
+    var m=enc.encodeBuffer(all.subarray(i,i+1152));if(m.length)parts.push(m);
+    if((i/1152)%400===0)await new Promise(function(r){setTimeout(r,0)})}
+  var f=enc.flush();if(f.length)parts.push(f);
+  return new Blob(parts,{type:"audio/mp3"})}
 async function recDone(){
   setRec(2);
   try{
-    var wav=await toWav(new Blob(REC.chunks,{type:REC.mr.mimeType||"audio/webm"}));
-    var r=await ai({action:"audio",audio:b64(wav)}),rec=r.recipe;
+    if(REC.n<32000)throw new Error("A gravação ficou muito curta.");
+    var blob=await toMp3(),buf=await blob.arrayBuffer();
+    var r=await ai({action:"audio",mime:"audio/mp3",audio:b64(buf)}),rec=r.recipe;
     rec.tags=(rec.tags||[]).concat(["Minha receita"]);
     S.edit=rec;S.miss=r.missing||[];PH.cover=null;S.v="form";setRec(0);draw();
     toast("Receita organizada. Confira os campos.");
-  }catch(e){setRec(0);toast(nice(e))}}
+  }catch(e){setRec(0);toast(/curta|conversor/.test(e.message||"")?e.message:nice(e))}}
 async function testAI(){
   var el=$("mtest");if(!el)return;el.textContent="Testando…";
   try{
@@ -453,7 +482,7 @@ function home(){
   '<div class="search">'+ic("search",20)+'<input id="q" placeholder="Buscar uma receita" value="'+esc(S.q)+'"></div>'+
   '<p class="lbl">Para hoje</p><div id="sug">'+sugHtml()+'</div>'+
   '<p class="lbl">Seu caderno</p><div class="grid">'+CATS.map(function(c){var k=S.rows.filter(function(r){return inCat(r,c[0])}).length;return '<button class="cat t'+c[3]+'" data-cat="'+c[0]+'">'+ic(c[1],34)+'<div><b>'+c[0]+'</b><small>'+(k?k+(k===1?" receita":" receitas"):c[2])+'</small></div></button>'}).join('')+'</div>'+
-  '<p class="lbl">Explorar</p><div class="chips"><button class="chip" data-go="shop">Lista de compras'+shopCnt()+'</button>'+TAGS.map(function(t){return '<button class="chip" data-tag="'+esc(t)+'">'+esc(t)+'</button>'}).join('')+'</div>'+
+  '<p class="lbl">Explorar</p><div class="chips"><button class="chip" data-go="shop">Lista de compras'+shopCnt()+'</button><button class="chip" data-go="plan">Cardápio da semana</button>'+TAGS.map(function(t){return '<button class="chip" data-tag="'+esc(t)+'">'+esc(t)+'</button>'}).join('')+'</div>'+
   (n?'':'<div class="box" data-go="add" style="margin-top:20px">Seu caderno está vazio. Toque aqui para criar a primeira receita.</div>')}
 function me(){
   var m=S.user.user_metadata||{};
@@ -562,13 +591,34 @@ function openCook(){
   var b=parseInt(r.servings,10)||0,f=b?curServ(r)/b:1,ing=f===1?(r.ingredients||[]):scaleIng(r.ingredients||[],f),pages=[{t:"Ingredientes"+(b?" para "+curServ(r)+" porções":""),x:ing.map(function(i){return "• "+i}).join("\n")||"Sem ingredientes ainda."}];
   (r.steps||[]).forEach(function(st,i){pages.push({t:"Passo "+(i+1)+" de "+r.steps.length,x:st})});
   CK={p:pages,i:0,title:r.title};cookDraw();wakeOn()}
+function parseTime(t){
+  if(/meia hora/i.test(t))return 1800;
+  var re=/(\d+(?:[.,]\d+)?)\s*(horas?|h|minutos?|min|segundos?|seg)\b/gi,m,a=[];
+  while((m=re.exec(t)))a.push({n:parseFloat(m[1].replace(",",".")),u:m[2].toLowerCase()[0]});
+  if(!a.length)return 0;
+  var f=function(x){return Math.round(x.n*(x.u==="h"?3600:x.u==="s"?1:60))};
+  return a.length===2&&a[0].u==="h"&&a[1].u==="m"?f(a[0])+f(a[1]):f(a[0])}
+function tmFmt(ms){var x=Math.max(0,Math.ceil(ms/1000)),h=Math.floor(x/3600),m=Math.floor(x%3600/60),q=x%60;return (h?h+":":"")+((m<10&&h)?"0":"")+m+":"+(q<10?"0":"")+q}
+function tmDraw(){
+  var el=$("cktm");if(!el||!CK)return;var t=CK.tm;
+  el.innerHTML=!t?"":t.done?'<button class="ckalarm" data-ck="s">Acabou o tempo! Toque para parar</button>':'<span class="cktime">Tempo: '+tmFmt(t.end-Date.now())+'</span> <button class="cklink" data-ck="c">cancelar</button>'}
+function beep(){try{var o=CK.ac.createOscillator(),g=CK.ac.createGain();o.frequency.value=880;g.gain.value=.25;o.connect(g);g.connect(CK.ac.destination);o.start();o.stop(CK.ac.currentTime+.3)}catch(e){}if(navigator.vibrate)navigator.vibrate([300,150,300])}
+function tmStop(){if(!CK)return;clearInterval(CK.iv);clearInterval(CK.al);CK.tm=null;tmDraw()}
+function tmStart(sec){
+  CK.ac=CK.ac||new (window.AudioContext||window.webkitAudioContext)();try{CK.ac.resume()}catch(e){}
+  tmStop();CK.tm={end:Date.now()+sec*1000,done:false};
+  CK.iv=setInterval(function(){if(!CK||!CK.tm)return;if(Date.now()>=CK.tm.end&&!CK.tm.done){CK.tm.done=true;beep();CK.al=setInterval(beep,1500)}tmDraw()},500);tmDraw()}
 function cookDraw(){
   var d=$("cook");if(!d){d=document.createElement("div");d.id="cook";document.body.appendChild(d)}
-  var p=CK.p[CK.i],last=CK.i>=CK.p.length-1;
-  d.innerHTML='<div class="ckin"><div class="cktop"><b>'+esc(CK.title)+'</b><button data-ck="x" aria-label="Sair">×</button></div><p class="ckt">'+esc(p.t)+'</p><div class="ckx">'+esc(p.x)+'</div><div class="ckbar"><button data-ck="p"'+(CK.i?'':' disabled')+'>Anterior</button><button class="pri" data-ck="n">'+(last?'Concluir':'Próximo')+'</button></div></div>'}
+  var p=CK.p[CK.i],last=CK.i>=CK.p.length-1,sec=p.t.indexOf("Passo")===0?parseTime(p.x):0;
+  d.innerHTML='<div class="ckin"><div class="cktop"><b>'+esc(CK.title)+'</b><button data-ck="x" aria-label="Sair">×</button></div><div id="cktm"></div><p class="ckt">'+esc(p.t)+'</p><div class="ckx">'+esc(p.x)+'</div>'+
+  (sec?'<div class="ckact"><button data-ck="t" data-s="'+sec+'">Iniciar cronômetro de '+tmFmt(sec*1000)+'</button>'+(/Android/i.test(navigator.userAgent)?'<a href="intent:#Intent;action=android.intent.action.SET_TIMER;i.android.intent.extra.alarm.LENGTH='+sec+';end">Usar o relógio do celular</a>':'')+'</div>':'')+
+  '<div class="ckbar"><button data-ck="p"'+(CK.i?'':' disabled')+'>Anterior</button><button class="pri" data-ck="n">'+(last?'Concluir':'Próximo')+'</button></div></div>';tmDraw()}
 document.addEventListener("click",function(e){
   var b=e.target.closest("[data-ck]");if(!b||!CK)return;var k=b.dataset.ck;
-  if(k==="x"||(k==="n"&&CK.i>=CK.p.length-1)){var d=$("cook");if(d)d.remove();CK=null;wakeOff();return}
+  if(k==="t"){tmStart(+b.dataset.s);return}
+  if(k==="s"||k==="c"){tmStop();return}
+  if(k==="x"||(k==="n"&&CK.i>=CK.p.length-1)){tmStop();var d=$("cook");if(d)d.remove();CK=null;wakeOff();return}
   CK.i+=k==="n"?1:-1;cookDraw()});
 document.addEventListener("visibilitychange",function(){if(CK&&document.visibilityState==="visible")wakeOn()});
 var GT=null;
@@ -583,6 +633,34 @@ function pickGeo(i){var x=(S.geo||[])[i];if(!x)return;S.pick={name:x.name,lat:x.
 document.addEventListener("input",function(e){if(e.target.id==="m_city"){S.pick=null;clearTimeout(GT);var v=e.target.value.trim();GT=setTimeout(function(){geoSearch(v)},300)}});
 async function favById(id){var r=byId(id);if(!r)return;var y=window.scrollY,v=!r.is_favorite;r.is_favorite=v;draw();window.scrollTo(0,y);
   var u=await sb.from("recipes").update({is_favorite:v}).eq("id",id);if(u.error){r.is_favorite=!v;draw();toast(nice(u.error))}}
+var DIAS=["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"];
+function planGet(){try{return JSON.parse(localStorage.getItem("lulu_plan")||"{}")}catch(e){return {}}}
+function planSet(p){try{localStorage.setItem("lulu_plan",JSON.stringify(p))}catch(e){}}
+function plan(){
+  var p=planGet(),opts='<option value="">Adicionar receita…</option>'+S.rows.map(function(r){return '<option value="'+r.id+'">'+esc(r.title)+'</option>'}).join('');
+  return '<button class="back" data-act="shopback">'+ic("back",18)+'Voltar</button><h2>Cardápio da semana</h2><p class="sub">Escolha as receitas de cada dia e gere uma lista de compras única.</p>'+
+  DIAS.map(function(d,i){var l=(p[i]||[]).map(byId).filter(Boolean);
+    return '<div class="item" style="display:block;cursor:default"><b>'+d+'</b>'+l.map(function(r){return '<div class="plr"><span>'+esc(r.title)+'</span><button class="link" data-act="plrm" data-d="'+i+'" data-id="'+r.id+'">remover</button></div>'}).join('')+'<select class="f" data-plsel="'+i+'" style="margin:8px 0 0">'+opts+'</select></div>'}).join('')+
+  '<button class="btn" data-act="plshop">Gerar lista de compras da semana</button>'}
+function sumIngs(lists){
+  var m={},out=[];
+  lists.forEach(function(l){(l||[]).forEach(function(t){
+    var p=parseQty(t);if(!p){if(out.indexOf(t)<0)out.push(t);return}
+    var w=/^([A-Za-zÀ-ÿ]+)/.exec(p.rest),key=p.rest.toLowerCase();
+    if(w&&SG[w[1].toLowerCase()])key=SG[w[1].toLowerCase()]+key.slice(w[1].length);
+    if(!m[key]){m[key]={q:0,rest:p.rest};out.push(m[key])}m[key].q+=p.q})});
+  return out.map(function(x){if(typeof x==="string")return x;var q=x.q,rest=x.rest,w=/^([A-Za-zÀ-ÿ]+)/.exec(rest);
+    if(w){var a=w[1];if(q>1&&PL[a])rest=PL[a]+rest.slice(a.length);else if(q<=1&&SG[a])rest=SG[a]+rest.slice(a.length)}
+    return fmtQ(q)+" "+rest})}
+function planShop(){
+  var p=planGet(),ids=[];for(var i=0;i<7;i++)(p[i]||[]).forEach(function(id){ids.push(id)});
+  var lists=ids.map(byId).filter(Boolean).map(function(r){return r.ingredients});
+  if(!lists.length){toast("Escolha receitas primeiro.");return}
+  var l=shopGet().filter(function(x){return x.f!=="Cardápio da semana"});
+  sumIngs(lists).forEach(function(t){l.push({t:t,f:"Cardápio da semana",d:false})});
+  shopSet(l);S.v="shop";draw();toast("Lista da semana pronta")}
+document.addEventListener("change",function(e){var t=e.target;
+  if(t.dataset&&t.dataset.plsel!==undefined&&t.value){var p=planGet(),d=t.dataset.plsel;p[d]=(p[d]||[]).concat([t.value]);planSet(p);var y=window.scrollY;draw();window.scrollTo(0,y)}});
 async function madeToday(){
   var r=byId(S.id),log=(r.made_log||[]).concat([new Date().toISOString()]);
   var u=await sb.from("recipes").update({made_log:log}).eq("id",r.id);
@@ -634,7 +712,7 @@ function nav(){
   var n=[["home","home","Início"],["busca","search","Buscar"],["favs","heart","Favoritas"],["add","plus","Nova"],["me","user","Perfil"]],cur=S.v==="pv"?(S.pvBack||"home"):S.v;
   $("nav").innerHTML=n.map(function(x){var on=(cur===x[0]||(x[0]==="home"&&(cur==="list"||cur==="recipe"))||(x[0]==="add"&&cur==="form"));return '<button class="'+(on?'on':'')+'" data-go="'+x[0]+'">'+ic(x[1],24)+x[2]+'</button>'}).join('')}
 function draw(){
-  var f={login:login,home:home,list:list,recipe:recipe,form:form,favs:favs,me:me,pv:pv,busca:busca,shop:shop,newpw:newpw};
+  var f={login:login,home:home,list:list,recipe:recipe,form:form,favs:favs,me:me,pv:pv,busca:busca,shop:shop,newpw:newpw,plan:plan};
   var a=$("app");a.innerHTML=f[S.v]();a.classList.remove("turn");void a.offsetWidth;a.classList.add("turn");
   var nl=(S.v==="login"||S.v==="newpw");$("navbar").hidden=nl;document.body.classList.toggle("nn",nl);if(!nl)nav();if(S.v==="home"){wx();loadSugImgs()}
   window.scrollTo(0,0);bindExtra();
@@ -696,6 +774,8 @@ document.addEventListener("click",async function(e){
   if(d.act==="sugadd"){addSug(+d.i);return}
   if(d.act==="srai"){srAI();return}
   if(d.act==="doideas"){doIdeas();return}
+  if(d.act==="plshop"){planShop();return}
+  if(d.act==="plrm"){var pp=planGet(),dd=d.d,ix=(pp[dd]||[]).indexOf(d.id);if(ix>-1){pp[dd].splice(ix,1);planSet(pp);var yy=window.scrollY;draw();window.scrollTo(0,yy)}return}
   if(d.act==="idea"){recByName(S.ip.list[+d.i].name);return}
   if(d.act==="vid"){openVid(d.id);return}
   if(d.act==="cook"){openCook();return}
