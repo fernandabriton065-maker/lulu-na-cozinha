@@ -9,8 +9,8 @@
 <meta name="apple-mobile-web-app-title" content="Lulu na Cozinha">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icone-apple.png">
+<link rel="icon" href="icone-192.png">
 <title>Lulu na Cozinha</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -159,6 +159,8 @@ h1{font-size:40px;font-weight:600}
 .plr{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}.plr .link{margin:0;font-size:13px}
 .ckact{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:10px 0}.ckact button{border:0;border-radius:999px;padding:14px 18px;background:#1f1b1a;color:#fff;font:600 15px Inter,sans-serif;cursor:pointer}.ckact a{color:#4b5bd6;font-size:14px}
 #cktm{margin-top:10px;min-height:28px}.cktime{font:600 22px Sora,sans-serif}.cklink{border:0;background:none;color:#4b5bd6;cursor:pointer;font:inherit}.ckalarm{border:0;border-radius:16px;padding:14px;background:#c0476a;color:#fff;font:600 16px Inter,sans-serif;width:100%;animation:pulse 1s infinite}
+.chip{display:inline-flex;gap:6px;align-items:center}a.btn{text-decoration:none}
+.shg{display:flex;justify-content:space-between;align-items:center;margin:18px 0 8px}.shg b{font-family:Sora,sans-serif}
 </style>
 </head>
 <body>
@@ -172,7 +174,7 @@ var SB_KEY="sb_publishable_WWyLftD4R7j6QEV0g_sVRA_V0k_5yoK";
 var RECOV=/type=recovery/.test(location.hash);
 var sb=supabase.createClient(SB_URL,SB_KEY);
 
-var VERSION="9 · 24/10";
+var VERSION="10 · 25/10";
 var I={
 home:'<path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/>',
 plus:'<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
@@ -190,6 +192,7 @@ cup:'<path d="M5 10h11v4a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 11h1.5a2 2 0 0 1 0 4
 back:'<path d="M15 5l-7 7 7 7"/>',
 jug:'<path d="M8.5 3h7l1.5 4v13.5H7V7zM7 10h10"/>',
 list:'<path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/>',
+cart:'<circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2.5l2 11h10l2-8H7"/>',
 sun:'<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6L7 7M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/>',
 mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/>',
 stop:'<rect x="7" y="7" width="10" height="10" rx="2"/>',
@@ -346,16 +349,17 @@ function busca(){
   if(q.note)o+='<p class="sub" style="margin-top:14px">'+esc(q.note)+'</p>';
   if(q.q&&!q.busy&&!q.err&&q.food!==false)o+='<p class="lbl">Receita pela IA</p><button class="item" data-act="srai"><div class="th t1">'+ic("hat",28)+'</div><div><b>Escrever a receita de “'+esc(q.q)+'”</b><small>Toque para ver ingredientes e passo a passo</small></div></button>';
   if(q.vids&&q.vids.length)o+='<p class="lbl">Vídeos</p><div class="list">'+q.vids.map(function(v,i){return '<div class="item sugcard">'+(v.thumb?'<img class="vthumb" src="'+esc(v.thumb)+'" alt="" loading="lazy">':'')+'<div><b>'+esc(v.title)+'</b><small>'+esc(v.channel)+'</small><div class="acts"><button class="link" data-act="vid" data-id="'+esc(v.id)+'">Assistir aqui</button><button class="link" data-act="vidadd" data-i="'+i+'">Adicionar ao caderno</button></div></div></div>'}).join('')+'</div>';
-  o+=ideasBox();o+='<h3>Importar de um link</h3><input class="f" id="iu" placeholder="Cole o endereço da receita" inputmode="url" autocapitalize="none"><button class="btn alt" data-act="doimport">Transformar em receita</button>';
+  if(q.q&&!q.busy&&q.food!==false)o+=gbtn(q.q);o+=ideasBox();o+='<h3>Importar de um link</h3><input class="f" id="iu" placeholder="Cole o endereço da receita" inputmode="url" autocapitalize="none"><button class="btn alt" data-act="paste">Colar link copiado</button><button class="btn alt" data-act="doimport">Transformar em receita</button>';
   return o}
 async function doSearch(){
   var el=$("sq"),q=el?el.value.trim():"";if(!q)return;
-  var c=lc("lulu_sr"),k=q.toLowerCase(),hit=c[k];
+  if(BADQ.test(q)){S.sr={q:q,vids:[],food:false,note:"Não encontrei receitas para isso. Digite o nome de um prato, ingrediente ou bebida."};draw();return}
+  var c=lc("lulu_sr2"),k=q.toLowerCase(),hit=c[k];
   if(hit&&Date.now()-hit.at<604800000){S.sr={q:q,vids:hit.v};draw();return}
   S.sr={q:q,busy:true};draw();
   try{
-    var r=await ai({action:"search",q:q}),v=r.videos||[];
-    if(v.length){c[k]={v:v,at:Date.now()};lsave("lulu_sr",c)}
+    var r=await ai({action:"search",q:q}),v=clientFood(r.videos||[]);
+    if(v.length){c[k]={v:v,at:Date.now()};lsave("lulu_sr2",c)}
     S.sr={q:q,vids:v,food:r.food,note:v.length?"":(r.food===false?"Não encontrei receitas para isso. Digite o nome de um prato, ingrediente ou bebida.":"Não apareceram vídeos agora. Você ainda pode pedir a receita pela IA.")}
   }catch(e){S.sr={q:q,err:nice(e)}}
   if(S.v==="busca")draw()}
@@ -366,6 +370,13 @@ async function srAI(){
   toast("Escrevendo a receita…");
   try{var r=await ai({action:"suggest",name:q});c[k]={rec:r.recipe,img:r.image};lsave("lulu_ai",c);pvOpen(r.recipe,r.image,null,"busca")}
   catch(e){toast(nice(e))}}
+var BADQ=/(^|\s)(mc|dj|funk|clipe|videoclipe|m[uú]sica|letra|show|gato|gatinho|gatinha|cachorro|cachorrinho|filhote|meme|futebol|jogo|game|minecraft|novela|filme|trailer|pol[ií]tica|porn|xxx)(\s|$)/i;
+var VMUSIC=/clipe|videoclipe|official video|lyric|letra|ao vivo|\bshow\b|\bmc\b|funk|sertanejo|m[uú]sica|\bremix\b|\bdj\b|\bcover\b|par[oó]dia/i;
+var VGOOD=/receita|como fazer|passo a passo|ingredientes|modo de preparo|prepar|cozinh|culin[aá]ri|bolo|torta|sobremesa|doce|salgad|drink|coquetel|bebida|suco|caldo|sopa|molho|massa|assad|fritur|churrasco|marmita|lanche|p[aã]o de|brigadeiro|pudim/i;
+function clientFood(v){return v.filter(function(x){return !VMUSIC.test(x.title)&&VGOOD.test(x.title)})}
+function gbtn(q){
+  var u="https://www.google.com/search?q="+encodeURIComponent(q+" receita (site:tudogostoso.com.br OR site:panelinha.com.br OR site:cybercook.com.br OR site:receitasnestle.com.br OR site:guiadacozinha.com.br)");
+  return '<p class="lbl">Sites de receita</p><a class="btn alt" href="'+u+'" target="_blank" rel="noopener">Procurar nos sites de receita</a><p class="pvnote">Abre o Google. Ao achar uma receita, copie o endereço e toque em “Colar link copiado”, aqui embaixo.</p>'}
 function ideasBox(){
   var ip=S.ip||{};
   function sel(id,l,cur){return '<select class="f" id="'+id+'">'+l.map(function(v){return '<option'+(v===cur?' selected':'')+'>'+v+'</option>'}).join('')+'</select>'}
@@ -422,22 +433,10 @@ function recStop(){
 var FLD={title:"o nome da receita",prep_time:"o tempo de preparo",difficulty:"o nível (dificuldade)",servings:"as porções",ingredients:"os ingredientes",steps:"o modo de preparo"};
 function ms(k){return S.miss&&S.miss.indexOf(k)>-1?" miss":""}
 function warnBox(){
-  var m=S.miss||[];if(!m.length)return "";
-  var sug=m.filter(function(k){return k==="title"||k==="difficulty"||k==="servings"}),vz=m.filter(function(k){return sug.indexOf(k)<0});
-  var t="<b>Faltou você falar:</b> "+m.map(function(k){return FLD[k]}).join(", ")+".";
-  if(sug.length)t+=" Coloquei uma sugestão em "+sug.map(function(k){return FLD[k]}).join(", ")+": confira.";
-  if(vz.length)t+=" Preencha os campos em laranja.";
-  return '<div class="warn">'+t+'</div>'}
-function loadLame(){return new Promise(function(ok,no){if(window.lamejs)return ok();var sc=document.createElement("script");sc.src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js";sc.onload=ok;sc.onerror=function(){no(new Error("Não consegui carregar o conversor de áudio."))};document.head.appendChild(sc)})}
-async function toMp3(){
-  await loadLame();
-  var enc=new lamejs.Mp3Encoder(1,16000,32),parts=[],all=new Int16Array(REC.n),o=0;
-  REC.buf.forEach(function(b){all.set(b,o);o+=b.length});REC.buf=[];
-  for(var i=0;i<all.length;i+=1152){
-    var m=enc.encodeBuffer(all.subarray(i,i+1152));if(m.length)parts.push(m);
-    if((i/1152)%400===0)await new Promise(function(r){setTimeout(r,0)})}
-  var f=enc.flush();if(f.length)parts.push(f);
-  return new Blob(parts,{type:"audio/mp3"})}
+  var m=S.miss||[];if(!m.length)return "";var e=S.edit||{};
+  var sug={title:e.title,difficulty:e.difficulty,servings:e.servings?e.servings+" porções":""};
+  var li=m.map(function(k){var a=sug[k],nm=FLD[k].charAt(0).toUpperCase()+FLD[k].slice(1);return '<li><b>'+nm+'</b>: não falou. '+(a?'Sugeri “'+esc(a)+'”, confirme.':'Preencha o campo em laranja.')+'</li>'}).join('');
+  return '<div class="warn"><b>Faltou você falar:</b><ul style="margin:8px 0 0">'+li+'</ul></div>'}
 async function recDone(){
   setRec(2);
   try{
@@ -452,7 +451,7 @@ async function testAI(){
   var el=$("mtest");if(!el)return;el.textContent="Testando…";
   try{
     var r=await ai({action:"ping",deep:true});
-    el.innerHTML=["Função: funcionando","Chave Gemini: "+(r.gemini_key?"cadastrada":"FALTA"),"IA respondeu: "+(r.gemini_ok?"sim":"não"+(r.gemini_erro?" ("+esc(r.gemini_erro)+")":"")),"Chave YouTube: "+(r.youtube_key?"cadastrada":"não cadastrada (sem vídeos)")].join("<br>")
+    el.innerHTML=["Função: funcionando (versão "+(r.fn||"antiga, falta atualizar")+")","Chave Gemini: "+(r.gemini_key?"cadastrada":"FALTA"),"IA respondeu: "+(r.gemini_ok?"sim":"não"+(r.gemini_erro?" ("+esc(r.gemini_erro)+")":"")),"Chave YouTube: "+(r.youtube_key?"cadastrada":"não cadastrada (sem vídeos)")].join("<br>")
   }catch(e){el.innerHTML="Falhou: "+esc(nice(e))+"<br><small>Detalhe técnico: "+esc(e.message||"")+"</small>"}}
 function backup(){
   var d=JSON.stringify({exportado:new Date().toISOString(),receitas:S.rows},null,2),a=document.createElement("a");
@@ -471,7 +470,7 @@ async function toWav(blob){
 function b64(buf){var b=new Uint8Array(buf),s="";for(var i=0;i<b.length;i+=8192)s+=String.fromCharCode.apply(null,b.subarray(i,i+8192));return btoa(s)}
 function bindExtra(){var sq=$("sq");if(sq)sq.addEventListener("keydown",function(e){if(e.key==="Enter")doSearch()})}
 async function wx(){
-  var m=(S.user&&S.user.user_metadata)||{},la=m.lat||-23.6229,lo=m.lon||-46.5548;
+  var m=(S.user&&S.user.user_metadata)||{},L=lc("lulu_loc"),T=L.date===todayStr()&&L.lat,la=T?L.lat:(m.lat||-23.6229),lo=T?L.lon:(m.lon||-46.5548);
   if(S.wx&&Date.now()-S.wx.at<1800000)return;
   try{var r=await fetch("https://api.open-meteo.com/v1/forecast?latitude="+la+"&longitude="+lo+"&current=temperature_2m&timezone=auto"),j=await r.json();S.wx={t:j.current.temperature_2m,at:Date.now()}}catch(e){}
   var el=$("sug");if(el&&S.v==="home")el.innerHTML=sugHtml()}
@@ -479,10 +478,10 @@ function home(){
   var um=S.user.user_metadata||{},nk=um.apelido,n=S.rows.length;
   return (S.offline?'<div class="off">Sem internet: mostrando as receitas salvas no aparelho.</div>':'')+
   '<div class="banner"><p class="hi">'+greet()+(nk?', '+esc(nk):'')+'</p><h1>Lulu na Cozinha</h1><p class="sub">Receitas feitas com amor</p>'+(nk?'':'<button class="link" data-go="me" style="margin:12px 0 0">Como devemos te chamar? Toque aqui</button>')+(um.city?'':'<br><button class="link" data-go="me" style="margin:6px 0 0">Onde você está? Escolha sua cidade</button>')+'</div>'+
-  '<div class="search">'+ic("search",20)+'<input id="q" placeholder="Buscar uma receita" value="'+esc(S.q)+'"></div>'+
+  locCard()+'<div class="search">'+ic("search",20)+'<input id="q" placeholder="Buscar uma receita" value="'+esc(S.q)+'"></div>'+
   '<p class="lbl">Para hoje</p><div id="sug">'+sugHtml()+'</div>'+
   '<p class="lbl">Seu caderno</p><div class="grid">'+CATS.map(function(c){var k=S.rows.filter(function(r){return inCat(r,c[0])}).length;return '<button class="cat t'+c[3]+'" data-cat="'+c[0]+'">'+ic(c[1],34)+'<div><b>'+c[0]+'</b><small>'+(k?k+(k===1?" receita":" receitas"):c[2])+'</small></div></button>'}).join('')+'</div>'+
-  '<p class="lbl">Explorar</p><div class="chips"><button class="chip" data-go="shop">Lista de compras'+shopCnt()+'</button><button class="chip" data-go="plan">Cardápio da semana</button>'+TAGS.map(function(t){return '<button class="chip" data-tag="'+esc(t)+'">'+esc(t)+'</button>'}).join('')+'</div>'+
+  '<p class="lbl">Explorar</p><div class="chips"><button class="chip" data-go="shop">'+ic("cart",18)+' Lista de compras'+shopCnt()+'</button><button class="chip" data-go="plan">Cardápio da semana</button>'+TAGS.map(function(t){return '<button class="chip" data-tag="'+esc(t)+'">'+esc(t)+'</button>'}).join('')+'</div>'+
   (n?'':'<div class="box" data-go="add" style="margin-top:20px">Seu caderno está vazio. Toque aqui para criar a primeira receita.</div>')}
 function me(){
   var m=S.user.user_metadata||{};
@@ -490,7 +489,7 @@ function me(){
   '<label class="fl" for="m_nick">Nome ou apelido</label><input class="f" id="m_nick" value="'+esc(m.apelido||"")+'" placeholder="Como devemos te chamar?">'+
   '<label class="fl" for="m_city">Cidade (para sugerir receitas pelo clima)</label><input class="f" id="m_city" value="'+esc(m.city||"São Caetano do Sul")+'" autocomplete="off" placeholder="Comece a digitar a cidade"><div id="m_sug"></div>'+
   '<p style="color:var(--mut);font-size:14px">O app não usa o GPS e não pede permissão de localização. Ele usa só a cidade escrita aqui.</p>'+
-  '<div class="err" id="merr"></div><button class="btn" data-act="saveme" id="mbtn">Salvar</button><h3>Ferramentas</h3><button class="btn alt" data-act="testai">Testar a IA</button><div id="mtest" class="pvnote">'+lastErr()+'</div><button class="btn alt" data-act="backup">Baixar cópia do caderno</button><button class="btn alt" data-act="hardrefresh">Atualizar o app</button><button class="btn alt" data-act="logout">Sair da conta</button><p class="pvnote" style="text-align:center">Versão '+VERSION+'</p>'}
+  '<div class="err" id="merr"></div><button class="btn" data-act="saveme" id="mbtn">Salvar</button><h3>Ferramentas</h3><button class="btn alt" data-act="testai">Testar a IA</button><div id="mtest" class="pvnote">'+lastErr()+'</div><button class="btn alt" data-act="hardrefresh">Atualizar o app</button><button class="btn alt" data-act="logout">Sair da conta</button><p class="pvnote" style="text-align:center">Versão '+VERSION+'</p>'}
 async function saveMe(){
   var b=$("mbtn"),nick=$("m_nick").value.trim(),city=$("m_city").value.trim(),old=S.user.user_metadata||{},meta={apelido:nick,city:city,lat:old.lat,lon:old.lon};
   b.disabled=true;b.textContent="Salvando…";
@@ -542,23 +541,32 @@ function openVid(id){
   if(!/^[\w-]{11}$/.test(id))return;
   var d=document.createElement("div");d.id="vid";
   d.innerHTML='<div class="vbox"><button class="vclose" aria-label="Fechar">×</button><div class="vwrap"><iframe src="https://www.youtube-nocookie.com/embed/'+id+'?rel=0&playsinline=1" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Vídeo da receita"></iframe></div><a class="vlink" href="https://www.youtube.com/watch?v='+id+'" target="_blank" rel="noopener">Não abriu? Assistir no YouTube</a></div>';
-  d.addEventListener("click",function(e){if(e.target===d||e.target.classList.contains("vclose"))d.remove()});
+  d.addEventListener("click",function(e){if(e.target===d||e.target.classList.contains("vclose")){d.remove();SKIP=true;history.back()}});
+  try{history.pushState({ov:1},"")}catch(x){}
   document.body.appendChild(d)}
 function shopGet(){try{return JSON.parse(localStorage.getItem("lulu_shop")||"[]")}catch(e){return []}}
 function shopSet(l){try{localStorage.setItem("lulu_shop",JSON.stringify(l))}catch(e){}}
 function shopCnt(){var n=shopGet().filter(function(x){return !x.d}).length;return n?" ("+n+")":""}
 function toShop(){
   var r=byId(S.id),b=parseInt(r.servings,10)||0,f=b?curServ(r)/b:1,l=shopGet(),add=(f===1?r.ingredients:scaleIng(r.ingredients||[],f))||[],n=0;
-  add.forEach(function(t){if(!l.some(function(x){return x.t===t&&x.f===r.title})){l.push({t:t,f:r.title,d:false});n++}});
+  add.forEach(function(t){if(!shopOK(t))return;if(!l.some(function(x){return x.t===t&&x.f===r.title})){l.push({t:t,f:r.title,d:false});n++}});
   shopSet(l);toast(n?n+" itens na lista de compras":"Esses itens já estão na lista")}
 function shopTog(i){var l=shopGet();if(l[i]){l[i].d=!l[i].d;shopSet(l);draw()}}
 function shopClr(all){shopSet(all?[]:shopGet().filter(function(x){return !x.d}));draw()}
 function shopShare(){var t=shopGet().filter(function(x){return !x.d}).map(function(x){return "- "+x.t}).join("\n");
   if(navigator.share)navigator.share({title:"Lista de compras",text:t}).catch(function(){});else if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){toast("Lista copiada")})}
+function shopName(t){
+  var p=parseQty(t);if(!p)return {n:t,q:""};
+  var rest=p.rest.replace(/^de\s+/i,""),m=/^(xícaras?|colheres?(?: \((?:sopa|chá|café)\))?|latas?|caixas?|dentes?|pitadas?|fatias?|maços?|pacotes?|copos?|vidros?|kg|g|ml|l|litros?)(?:\s+de)?\s+/i.exec(rest);
+  var unit=m?m[1]:"",name=m?rest.slice(m[0].length):rest;
+  return {n:name.charAt(0).toUpperCase()+name.slice(1),q:(fmtQ(p.q)+" "+unit).trim()}}
+function shopOK(t){return !/^água\b/i.test(shopName(t).n)}
 function shop(){
-  var l=shopGet();
-  return '<button class="back" data-act="shopback">'+ic("back",18)+'Voltar</button><h2>Lista de compras</h2><p class="sub">'+(l.length?l.filter(function(x){return !x.d}).length+' para comprar':'Nenhum item ainda. Abra uma receita e toque em “Adicionar à lista de compras”.')+'</p>'+
-  l.map(function(x,i){return '<button class="shopi'+(x.d?' done':'')+'" data-act="shoptog" data-i="'+i+'"><i>'+(x.d?'✓':'')+'</i><span>'+esc(x.t)+'<br><small style="color:var(--mut)">'+esc(x.f||"")+'</small></span></button>'}).join('')+
+  var l=shopGet(),gs=[],ix={};
+  l.forEach(function(x,i){var f=x.f||"Outros";if(ix[f]===undefined){ix[f]=gs.length;gs.push({f:f,items:[]})}gs[ix[f]].items.push({x:x,i:i})});
+  var open=l.filter(function(x){return !x.d}).length;
+  return '<button class="back" data-act="shopback">'+ic("back",18)+'Voltar</button><h2>'+ic("cart",26)+' Lista de compras</h2><p class="sub">'+(l.length?open+' para comprar':'Nenhum item ainda. Abra uma receita e toque em “Adicionar à lista de compras”.')+'</p>'+
+  gs.map(function(g){return '<div class="shg"><b>'+esc(g.f)+'</b><button class="link" style="margin:0;font-size:13px" data-act="shopgrp" data-f="'+encodeURIComponent(g.f)+'">remover receita</button></div>'+g.items.map(function(o){var n=shopName(o.x.t);return '<button class="shopi'+(o.x.d?' done':'')+'" data-act="shoptog" data-i="'+o.i+'"><i>'+(o.x.d?'✓':'')+'</i><span>'+esc(n.n)+(n.q?'<br><small style="color:var(--mut)">'+esc(n.q)+'</small>':'')+'</span></button>'}).join('')}).join('')+
   (l.length?'<button class="btn alt" data-act="shopshare">Compartilhar ou copiar</button><button class="btn alt" data-act="shopclr">Limpar marcados</button><button class="btn del" data-act="shopall">Limpar tudo</button>':'')}
 function newpw(){return '<div class="login"><div class="banner"><h1>Nova senha</h1><p class="sub">Escolha uma senha nova</p></div><input class="f" id="np1" type="password" autocomplete="new-password" placeholder="Nova senha (mínimo 8 caracteres)"><input class="f" id="np2" type="password" autocomplete="new-password" placeholder="Repita a senha"><div class="err" id="nperr"></div><button class="btn" data-act="setpw">Salvar senha</button></div>'}
 async function setPw(){
@@ -590,7 +598,7 @@ function openCook(){
   var r=byId(S.id);if(!r)return;
   var b=parseInt(r.servings,10)||0,f=b?curServ(r)/b:1,ing=f===1?(r.ingredients||[]):scaleIng(r.ingredients||[],f),pages=[{t:"Ingredientes"+(b?" para "+curServ(r)+" porções":""),x:ing.map(function(i){return "• "+i}).join("\n")||"Sem ingredientes ainda."}];
   (r.steps||[]).forEach(function(st,i){pages.push({t:"Passo "+(i+1)+" de "+r.steps.length,x:st})});
-  CK={p:pages,i:0,title:r.title};cookDraw();wakeOn()}
+  CK={p:pages,i:0,title:r.title};try{history.pushState({ov:1},"")}catch(e){}cookDraw();wakeOn()}
 function parseTime(t){
   if(/meia hora/i.test(t))return 1800;
   var re=/(\d+(?:[.,]\d+)?)\s*(horas?|h|minutos?|min|segundos?|seg)\b/gi,m,a=[];
@@ -618,16 +626,16 @@ document.addEventListener("click",function(e){
   var b=e.target.closest("[data-ck]");if(!b||!CK)return;var k=b.dataset.ck;
   if(k==="t"){tmStart(+b.dataset.s);return}
   if(k==="s"||k==="c"){tmStop();return}
-  if(k==="x"||(k==="n"&&CK.i>=CK.p.length-1)){tmStop();var d=$("cook");if(d)d.remove();CK=null;wakeOff();return}
+  if(k==="x"||(k==="n"&&CK.i>=CK.p.length-1)){tmStop();var d=$("cook");if(d)d.remove();CK=null;wakeOff();SKIP=true;history.back();return}
   CK.i+=k==="n"?1:-1;cookDraw()});
 document.addEventListener("visibilitychange",function(){if(CK&&document.visibilityState==="visible")wakeOn()});
 var GT=null;
-function geoSearch(q){
-  var box=$("m_sug");if(!box)return;
+function geoSearch(q,bid){
+  var box=$(bid||"m_sug");if(!box)return;
   if(q.length<2){box.innerHTML="";return}
   fetch("https://geocoding-api.open-meteo.com/v1/search?name="+encodeURIComponent(q)+"&count=6&language=pt&format=json").then(function(r){return r.json()}).then(function(j){
     S.geo=j.results||[];
-    box.innerHTML=S.geo.map(function(x,i){return '<button class="shopi" data-pick="'+i+'"><span>'+esc(x.name)+'<br><small style="color:var(--mut)">'+esc([x.admin1,x.country].filter(Boolean).join(", "))+'</small></span></button>'}).join("")
+    box.innerHTML=S.geo.map(function(x,i){return '<button class="shopi" data-'+(bid==="l_sug"?"lpick":"pick")+'="'+i+'"><span>'+esc(x.name)+'<br><small style="color:var(--mut)">'+esc([x.admin1,x.country].filter(Boolean).join(", "))+'</small></span></button>'}).join("")
   }).catch(function(){})}
 function pickGeo(i){var x=(S.geo||[])[i];if(!x)return;S.pick={name:x.name,lat:x.latitude,lon:x.longitude};var c=$("m_city");if(c)c.value=x.name;var b=$("m_sug");if(b)b.innerHTML=""}
 document.addEventListener("input",function(e){if(e.target.id==="m_city"){S.pick=null;clearTimeout(GT);var v=e.target.value.trim();GT=setTimeout(function(){geoSearch(v)},300)}});
@@ -657,10 +665,34 @@ function planShop(){
   var lists=ids.map(byId).filter(Boolean).map(function(r){return r.ingredients});
   if(!lists.length){toast("Escolha receitas primeiro.");return}
   var l=shopGet().filter(function(x){return x.f!=="Cardápio da semana"});
-  sumIngs(lists).forEach(function(t){l.push({t:t,f:"Cardápio da semana",d:false})});
+  sumIngs(lists).filter(shopOK).forEach(function(t){l.push({t:t,f:"Cardápio da semana",d:false})});
   shopSet(l);S.v="shop";draw();toast("Lista da semana pronta")}
 document.addEventListener("change",function(e){var t=e.target;
   if(t.dataset&&t.dataset.plsel!==undefined&&t.value){var p=planGet(),d=t.dataset.plsel;p[d]=(p[d]||[]).concat([t.value]);planSet(p);var y=window.scrollY;draw();window.scrollTo(0,y)}});
+var HS=[],CUR=0,HK="",SKIP=false;
+function hkey(){return S.v+"|"+(S.id||"")+"|"+(S.cat||"")+"|"+(S.tag||"")+"|"+((S.pv&&S.pv.rec&&S.pv.rec.title)||"")}
+function snap(){return {v:S.v,cat:S.cat,tag:S.tag,q:S.q,id:S.id,pv:S.pv,pvBack:S.pvBack,edit:S.edit,miss:S.miss}}
+function resetH(){HS.length=0;HK="";CUR=0}
+function trackH(){
+  var k=hkey();
+  if(!HS.length){HS[0]=snap();CUR=0;HK=k;try{history.replaceState({i:0},"")}catch(e){}return}
+  if(S.noPush){S.noPush=false;HK=k;return}
+  if(k===HK)return;
+  HK=k;HS.length=CUR+1;HS.push(snap());CUR=HS.length-1;try{history.pushState({i:CUR},"")}catch(e){}}
+window.addEventListener("popstate",function(e){
+  if(CK){tmStop();var d=$("cook");if(d)d.remove();CK=null;wakeOff();return}
+  var v=$("vid");if(v){v.remove();return}
+  if(SKIP){SKIP=false;return}
+  if(!S.user)return;
+  var st=e.state;
+  if(st&&HS[st.i]){Object.assign(S,HS[st.i]);CUR=st.i;S.noPush=true;draw()}
+  else if(S.v!=="home"){S.v="home";S.noPush=true;draw()}});
+function todayStr(){var d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
+function locCard(){
+  if(lc("lulu_loc").date===todayStr())return "";
+  var um=S.user.user_metadata||{},c=um.city||"São Caetano do Sul";
+  return '<div class="sugh" style="display:block;color:var(--ink)"><b style="font-family:Sora,sans-serif;font-size:17px">Onde você está hoje?</b><p class="sub" style="margin:4px 0 10px">Uso a cidade só para sugerir receitas pelo clima.</p><input class="f" id="l_city" placeholder="Comece a digitar a cidade" autocomplete="off"><div id="l_sug"></div><button class="btn alt" data-act="locstay">Continuar em '+esc(c)+'</button></div>'}
+document.addEventListener("input",function(e){if(e.target.id==="l_city"){clearTimeout(GT);var v=e.target.value.trim();GT=setTimeout(function(){geoSearch(v,"l_sug")},300)}});
 async function madeToday(){
   var r=byId(S.id),log=(r.made_log||[]).concat([new Date().toISOString()]);
   var u=await sb.from("recipes").update({made_log:log}).eq("id",r.id);
@@ -715,7 +747,7 @@ function draw(){
   var f={login:login,home:home,list:list,recipe:recipe,form:form,favs:favs,me:me,pv:pv,busca:busca,shop:shop,newpw:newpw,plan:plan};
   var a=$("app");a.innerHTML=f[S.v]();a.classList.remove("turn");void a.offsetWidth;a.classList.add("turn");
   var nl=(S.v==="login"||S.v==="newpw");$("navbar").hidden=nl;document.body.classList.toggle("nn",nl);if(!nl)nav();if(S.v==="home"){wx();loadSugImgs()}
-  window.scrollTo(0,0);bindExtra();
+  window.scrollTo(0,0);bindExtra();trackH();
   var q=$("q");if(q){q.addEventListener("input",function(){S.q=q.value});q.addEventListener("keydown",function(e){if(e.key==="Enter"&&S.q.trim()){S.cat=null;S.tag=null;S.v="list";draw()}})}
 }
 
@@ -735,7 +767,7 @@ async function doLogin(){
   if(r.error){S.err=nice(r.error);draw();return}
   S.err="";S.user=r.data.user;await start();
 }
-async function start(){await load();var ask=false;try{ask=!((S.user.user_metadata||{}).city)&&!localStorage.getItem("lulu_asked");if(ask)localStorage.setItem("lulu_asked","1")}catch(e){}S.v=ask?"me":"home";draw()}
+async function start(){resetH();await load();var ask=false;try{ask=!((S.user.user_metadata||{}).city)&&!localStorage.getItem("lulu_asked");if(ask)localStorage.setItem("lulu_asked","1")}catch(e){}S.v=ask?"me":"home";draw()}
 async function save(){
   var t=$("f_title").value.trim();if(!t){$("ferr").textContent="Dê um nome para a receita.";return}
   if(S.offline||!navigator.onLine){$("ferr").textContent="Sem internet. Conecte-se para salvar.";return}
@@ -767,7 +799,7 @@ async function toggleFav(){
 }
 
 document.addEventListener("click",async function(e){
-  var b=e.target.closest("[data-go],[data-cat],[data-tag],[data-open],[data-act],[data-addtag],[data-idea],[data-favid],[data-pick]");if(!b)return;
+  var b=e.target.closest("[data-go],[data-cat],[data-tag],[data-open],[data-act],[data-addtag],[data-idea],[data-favid],[data-pick],[data-lpick]");if(!b)return;
   var d=b.dataset;
   if(d.addtag){var i=$("f_tags"),cur=tagsOf(i.value);if(cur.indexOf(d.addtag)<0)cur.push(d.addtag);i.value=cur.join(", ");return}
   if(d.act==="sugopen"){openSug(+d.i);return}
@@ -791,6 +823,8 @@ document.addEventListener("click",async function(e){
   if(d.act==="shopall"){shopClr(true);return}
   if(d.act==="shopshare"){shopShare();return}
   if(d.act==="shopback"){S.v="home";draw();return}
+  if(d.act==="shopgrp"){var g0=decodeURIComponent(d.f);shopSet(shopGet().filter(function(x){return (x.f||"Outros")!==g0}));draw();return}
+  if(d.act==="paste"){if(navigator.clipboard&&navigator.clipboard.readText)navigator.clipboard.readText().then(function(t){var i=$("iu");if(i){i.value=(t||"").trim();toast("Link colado")}}).catch(function(){toast("Cole manualmente no campo.")});else toast("Cole manualmente no campo.");return}
   if(d.act==="testai"){testAI();return}
   if(d.act==="backup"){backup();return}
   if(d.act==="pvadd"){var p=S.pv;if(p&&p.rec)addRec(p.rec,{image:p.img,source:p.src,note:p.src?"Importada de um link.":null});return}
@@ -802,9 +836,11 @@ document.addEventListener("click",async function(e){
   if(d.idea){S.edit={title:d.idea};PH.cover=null;S.v="form";draw();return}
   if(d.favid){favById(d.favid);return}
   if(d.pick!==undefined){pickGeo(+d.pick);return}
+  if(d.lpick!==undefined){var gx=(S.geo||[])[+d.lpick];if(gx){lsave("lulu_loc",{date:todayStr(),name:gx.name,lat:gx.latitude,lon:gx.longitude});S.wx=null;toast("Local de hoje: "+gx.name);draw()}return}
+  if(d.act==="locstay"){var um2=S.user.user_metadata||{};lsave("lulu_loc",{date:todayStr(),name:um2.city||"",lat:um2.lat,lon:um2.lon});S.wx=null;draw();return}
   if(d.act==="saveme"){saveMe();return}
   if(d.act==="login"){doLogin();return}
-  if(d.act==="logout"){await sb.auth.signOut();S.user=null;S.rows=[];S.v="login";draw();return}
+  if(d.act==="logout"){await sb.auth.signOut();S.user=null;S.rows=[];resetH();S.v="login";draw();return}
   if(d.act==="fav"){toggleFav();return}
   if(d.act==="save"){save();return}
   if(d.act==="del"){del();return}
