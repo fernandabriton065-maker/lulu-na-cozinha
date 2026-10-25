@@ -161,6 +161,8 @@ h1{font-size:40px;font-weight:600}
 #cktm{margin-top:10px;min-height:28px}.cktime{font:600 22px Sora,sans-serif}.cklink{border:0;background:none;color:#4b5bd6;cursor:pointer;font:inherit}.ckalarm{border:0;border-radius:16px;padding:14px;background:#c0476a;color:#fff;font:600 16px Inter,sans-serif;width:100%;animation:pulse 1s infinite}
 .chip{display:inline-flex;gap:6px;align-items:center}a.btn{text-decoration:none}
 .shg{display:flex;justify-content:space-between;align-items:center;margin:18px 0 8px}.shg b{font-family:Sora,sans-serif}
+@media (max-width:999px){nav button{font-size:10.5px}}
+.ckvz{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}.ckvz button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 14px;font:600 14px Inter,sans-serif;cursor:pointer;color:#1f1b1a}.ckvz button.on{background:#1f1b1a;color:#fff}
 </style>
 </head>
 <body>
@@ -174,7 +176,7 @@ var SB_KEY="sb_publishable_WWyLftD4R7j6QEV0g_sVRA_V0k_5yoK";
 var RECOV=/type=recovery/.test(location.hash);
 var sb=supabase.createClient(SB_URL,SB_KEY);
 
-var VERSION="10 · 25/10";
+var VERSION="12 · 26/10";
 var I={
 home:'<path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/>',
 plus:'<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
@@ -320,7 +322,7 @@ async function loadSugImgs(){
   }catch(e){}
   S.li=false}
 function pvOpen(rec,img,src,back,note){S.pv={rec:rec,img:img,src:src,note:note};S.pvBack=back;S.v="pv";draw()}
-function openSug(i){var x=SUGG[i];pvOpen(recOf(x),wimg()[x.n]||null,x.u,"home","Receita tradicional do app. Quer outra versão? Abra o link.")}
+function openSug(i){var x=SUGG[i];pvOpen(recOf(x),wimg()[x.n]||null,x.u,"home","Receita tradicional do app. Foto ilustrativa (Unsplash). Quer outra versão? Abra o link.")}
 async function addSug(i){var x=SUGG[i];await addRec(recOf(x),{image:wimg()[x.n]||null,source:x.u,note:"Receita sugerida pelo app. Veja outra versão no link."})}
 async function addRec(rec,ex){
   if(S.offline||!navigator.onLine){toast("Sem internet.");return false}
@@ -339,7 +341,7 @@ function pv(){
   '<h3>'+ic("list",22)+'Modo de preparo</h3><ol>'+(r.steps||[]).map(function(i){return '<li>'+esc(i)+'</li>'}).join('')+'</ol>'+
   '<button class="btn" data-act="pvadd">Adicionar ao caderno</button>'+
   (p.src?'<p><a class="link" href="'+esc(p.src)+'" target="_blank" rel="noopener">Abrir link da receita</a></p>':'')+
-  '<p class="pvnote">'+esc(p.note||"Receita escrita pela IA. Foto ilustrativa (Pexels). Confira as medidas antes de fazer.")+'</p>'}
+  '<p class="pvnote">'+esc(p.note||"Receita escrita pela IA. Foto ilustrativa de banco de imagens (Unsplash). Confira as medidas antes de fazer.")+'</p>'}
 function busca(){
   var q=S.sr||{};
   var o='<h2>Buscar receitas</h2><p class="sub">Digite um prato ou ingrediente.</p>'+
@@ -372,7 +374,7 @@ async function srAI(){
   catch(e){toast(nice(e))}}
 var BADQ=/(^|\s)(mc|dj|funk|clipe|videoclipe|m[uú]sica|letra|show|gato|gatinho|gatinha|cachorro|cachorrinho|filhote|meme|futebol|jogo|game|minecraft|novela|filme|trailer|pol[ií]tica|porn|xxx)(\s|$)/i;
 var VMUSIC=/clipe|videoclipe|official video|lyric|letra|ao vivo|\bshow\b|\bmc\b|funk|sertanejo|m[uú]sica|\bremix\b|\bdj\b|\bcover\b|par[oó]dia/i;
-var VGOOD=/receita|como fazer|passo a passo|ingredientes|modo de preparo|prepar|cozinh|culin[aá]ri|bolo|torta|sobremesa|doce|salgad|drink|coquetel|bebida|suco|caldo|sopa|molho|massa|assad|fritur|churrasco|marmita|lanche|p[aã]o de|brigadeiro|pudim/i;
+var VGOOD=/receita|como fazer|passo a passo|ingredientes|modo de preparo|prepar|cozinh|culin[aá]ri|bolo|torta|sobremesa|doce|salgad|drink|coquetel|bebida|suco|caldo|sopa|molho|massa|assad|fritur|churrasco|marmita|lanche|p[aã]o|brigadeiro|pudim|chocolate|trufa|brownie|cookie|bombom|cacau|queijo|carne|frango|peixe|camar[aã]o|arroz|feij[aã]o|macarr[aã]o|ovo|batata|pizza|hamb[uú]rguer|salada|risoto|cuscuz|tapioca|panqueca|vitamina|smoothie|caf[eé]|ch[aá]\b|cerveja|vinho|caipirinha|cacha[cç]a|costela|lasanha|strogonoff|estrogonofe|farofa|mousse|sorvete|geleia|iogurte|omelete/i;
 function clientFood(v){return v.filter(function(x){return !VMUSIC.test(x.title)&&VGOOD.test(x.title)})}
 function gbtn(q){
   var u="https://www.google.com/search?q="+encodeURIComponent(q+" receita (site:tudogostoso.com.br OR site:panelinha.com.br OR site:cybercook.com.br OR site:receitasnestle.com.br OR site:guiadacozinha.com.br)");
@@ -380,8 +382,8 @@ function gbtn(q){
 function ideasBox(){
   var ip=S.ip||{};
   function sel(id,l,cur){return '<select class="f" id="'+id+'">'+l.map(function(v){return '<option'+(v===cur?' selected':'')+'>'+v+'</option>'}).join('')+'</select>'}
-  var o='<h3>Tenho ingredientes</h3><p class="sub" style="margin:0 0 10px">Diga o que você tem e o que quer fazer.</p><input class="f" id="ing" placeholder="Ex.: fubá, ovos, leite" value="'+esc(ip.ing||"")+'">'+
-  '<div class="row" style="grid-template-columns:1fr 1fr">'+sel("ip_tipo",["Qualquer","Doce","Salgado","Bebida","Almoço","Lanche"],ip.tipo||"Qualquer")+sel("ip_tempo",["Qualquer tempo","Rápida (até 30 min)","Sem pressa"],ip.tempo||"Qualquer tempo")+'</div><button class="btn alt" data-act="doideas">Ver ideias</button>';
+  var o='<h3>Tenho ingredientes</h3><p class="sub" style="margin:0 0 10px">Escreva o que você tem e, se quiser, o que prefere (doce, salgado, rápido).</p><input class="f" id="ing" placeholder="Ex.: tenho fubá e ovos, quero um doce rápido" value="'+esc(ip.ing||"")+'">'+
+  '<button class="btn alt" data-act="doideas">Ver ideias</button>';
   if(ip.busy)o+='<p class="sub" style="margin-top:12px">Pensando…</p>';
   if(ip.err)o+='<div class="err" style="margin-top:10px">'+esc(ip.err)+'</div>';
   if(ip.list)o+='<div style="margin-top:12px">'+ip.list.map(function(x,i){return '<button class="item" data-act="idea" data-i="'+i+'"><div class="th t2">'+ic("hat",28)+'</div><div><b>'+esc(x.name)+'</b><small>'+esc(x.desc+(x.time?" · "+x.time:""))+'</small></div></button>'}).join('')+'</div>';
@@ -403,7 +405,11 @@ async function recByName(n){
 async function doImport(){
   var u=($("iu")||{}).value;u=(u||"").trim();if(!u)return;toast("Lendo a receita…");
   try{var r=await ai({action:"import",url:u});pvOpen(r.recipe,r.image,r.source_url||u,"busca")}catch(e){toast(nice(e))}}
-async function vidAdd(i){var v=(S.sr.vids||[])[i];if(!v)return;await addRec({title:v.title,category:"Minhas receitas",tags:[],notes:"Vídeo do YouTube de "+v.channel},{image:v.thumb,source:"https://www.youtube.com/watch?v="+v.id})}
+async function vidAdd(i){
+  var v=(S.sr.vids||[])[i];if(!v)return;toast("Lendo o vídeo… pode levar um minuto");
+  var url="https://www.youtube.com/watch?v="+v.id;
+  try{var r=await ai({action:"video",id:v.id});await addRec(r.recipe,{image:r.image||v.thumb,source:url,note:"Receita extraída do vídeo de "+v.channel+"."})}
+  catch(e){await addRec({title:v.title,category:"Minhas receitas",tags:[],notes:"Vídeo do YouTube de "+v.channel+". A receita escrita não foi encontrada."},{image:v.thumb,source:url});toast(/sem_receita/.test(e.message||"")?"O vídeo não traz a receita escrita. Salvei só o vídeo.":nice(e))}}
 function audioBox(){var st=S.rec||0;
   return '<button class="mic'+(st===1?' rec':'')+'" data-act="rec" aria-label="Gravar"'+(st===2?' disabled':'')+'>'+ic(st===1?"stop":"mic",40)+'</button><p class="hint">'+(st===0?'Toque e conte a receita falando':st===1?'Gravando… toque para terminar':'Organizando… pode levar até 30 segundos')+'</p>'}
 var REC={ctx:null,src:null,proc:null,stream:null,buf:[],n:0,t:null,iv:null,t0:0,acc:0,cnt:0};
@@ -489,7 +495,7 @@ function me(){
   '<label class="fl" for="m_nick">Nome ou apelido</label><input class="f" id="m_nick" value="'+esc(m.apelido||"")+'" placeholder="Como devemos te chamar?">'+
   '<label class="fl" for="m_city">Cidade (para sugerir receitas pelo clima)</label><input class="f" id="m_city" value="'+esc(m.city||"São Caetano do Sul")+'" autocomplete="off" placeholder="Comece a digitar a cidade"><div id="m_sug"></div>'+
   '<p style="color:var(--mut);font-size:14px">O app não usa o GPS e não pede permissão de localização. Ele usa só a cidade escrita aqui.</p>'+
-  '<div class="err" id="merr"></div><button class="btn" data-act="saveme" id="mbtn">Salvar</button><h3>Ferramentas</h3><button class="btn alt" data-act="testai">Testar a IA</button><div id="mtest" class="pvnote">'+lastErr()+'</div><button class="btn alt" data-act="hardrefresh">Atualizar o app</button><button class="btn alt" data-act="logout">Sair da conta</button><p class="pvnote" style="text-align:center">Versão '+VERSION+'</p>'}
+  '<div class="err" id="merr"></div><button class="btn" data-act="saveme" id="mbtn">Salvar</button>'+(devOn()?'<h3>Ferramentas</h3><button class="btn alt" data-act="testai">Testar a IA</button><div id="mtest" class="pvnote">'+lastErr()+'</div>':'')+'<button class="btn alt" data-act="hardrefresh">Atualizar o app</button><button class="btn alt" data-act="logout">Sair da conta</button><p class="pvnote" style="text-align:center" data-act="vtap">Versão '+VERSION+'</p>'}
 async function saveMe(){
   var b=$("mbtn"),nick=$("m_nick").value.trim(),city=$("m_city").value.trim(),old=S.user.user_metadata||{},meta={apelido:nick,city:city,lat:old.lat,lon:old.lon};
   b.disabled=true;b.textContent="Salvando…";
@@ -616,18 +622,56 @@ function tmStart(sec){
   CK.ac=CK.ac||new (window.AudioContext||window.webkitAudioContext)();try{CK.ac.resume()}catch(e){}
   tmStop();CK.tm={end:Date.now()+sec*1000,done:false};
   CK.iv=setInterval(function(){if(!CK||!CK.tm)return;if(Date.now()>=CK.tm.end&&!CK.tm.done){CK.tm.done=true;beep();CK.al=setInterval(beep,1500)}tmDraw()},500);tmDraw()}
+var VZ={on:false,rec:null,speaking:false};
+function vzSay(txt){
+  if(!window.speechSynthesis)return;
+  VZ.speaking=true;try{if(VZ.rec)VZ.rec.stop()}catch(e){}
+  speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(txt);u.lang="pt-BR";u.rate=.95;
+  var done=function(){VZ.speaking=false;if(VZ.on&&CK){try{VZ.rec.start()}catch(e){}}};
+  u.onend=done;u.onerror=done;speechSynthesis.speak(u)}
+function vzReadStep(){var p=CK.p[CK.i];vzSay(p.t+". "+p.x.replace(/•/g,"").replace(/\n/g,". "))}
+function vzBar(){
+  var can=!!(window.SpeechRecognition||window.webkitSpeechRecognition),tts=!!window.speechSynthesis;
+  return '<div class="ckvz">'+(tts?'<button data-ck="listen">Ouvir este passo</button>':'')+(can?'<button data-ck="vz" class="'+(VZ.on?'on':'')+'">'+(VZ.on?'Voz ligada · diga “próximo”':'Comandos de voz')+'</button>':'')+'</div>'}
+function vzStart(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast("Este aparelho não entende comandos de voz.");return}
+  VZ.on=true;var r=new SR();r.lang="pt-BR";r.continuous=true;r.interimResults=false;
+  r.onresult=function(e){if(!CK)return;vzCmd(e.results[e.results.length-1][0].transcript.toLowerCase().trim())};
+  r.onend=function(){if(VZ.on&&CK&&!VZ.speaking){try{r.start()}catch(x){}}};
+  r.onerror=function(e){if(e.error==="not-allowed"||e.error==="service-not-allowed"){VZ.on=false;toast("Não consegui usar o microfone para os comandos de voz.");if(CK)cookDraw()}};
+  VZ.rec=r;try{r.start()}catch(x){}
+  cookDraw();vzSay("Voz ligada. Diga próximo, voltar, repetir ou cronômetro. "+CK.p[CK.i].t+". "+CK.p[CK.i].x.replace(/•/g,"").replace(/\n/g,". "))}
+function vzStop(){VZ.on=false;VZ.speaking=false;try{if(VZ.rec)VZ.rec.stop()}catch(e){}VZ.rec=null;try{if(window.speechSynthesis)speechSynthesis.cancel()}catch(e){}}
+function vzClose(){tmStop();vzStop();var d=$("cook");if(d)d.remove();CK=null;wakeOff();SKIP=true;history.back()}
+function vzCmd(t){
+  t=t.normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  if(t.split(/\s+/).length>6)return;
+  if(/\b(proximo|proxima|avanca|continua|segue|passa)\b/.test(t)){
+    if(CK.i>=CK.p.length-1){vzSay("Receita concluída. Bom apetite!");setTimeout(function(){if(CK)vzClose()},3500);return}
+    CK.i++;cookDraw();vzReadStep();return}
+  if(/\b(voltar|volta|anterior|antes)\b/.test(t)){if(CK.i>0){CK.i--;cookDraw();vzReadStep()}return}
+  if(/\b(repete|repetir|repita|novamente|de novo)\b/.test(t)){vzReadStep();return}
+  if(/\bingredientes?\b/.test(t)){CK.i=0;cookDraw();vzReadStep();return}
+  if(/\b(cronometro|timer|temporizador)\b/.test(t)){
+    var p=CK.p[CK.i],sec=p.t.indexOf("Passo")===0?parseTime(p.x):0;
+    if(sec){tmStart(sec);vzSay("Cronômetro de "+Math.round(sec/60)+" minutos iniciado.")}else vzSay("Este passo não tem tempo.");return}
+  if(/\b(parar|para|chega|silencio|cancelar|cancela|desliga)\b/.test(t)){if(CK.tm)tmStop();try{speechSynthesis.cancel()}catch(e){}return}
+  if(/\b(sair|fechar|terminei)\b/.test(t)){vzClose();return}}
 function cookDraw(){
   var d=$("cook");if(!d){d=document.createElement("div");d.id="cook";document.body.appendChild(d)}
   var p=CK.p[CK.i],last=CK.i>=CK.p.length-1,sec=p.t.indexOf("Passo")===0?parseTime(p.x):0;
-  d.innerHTML='<div class="ckin"><div class="cktop"><b>'+esc(CK.title)+'</b><button data-ck="x" aria-label="Sair">×</button></div><div id="cktm"></div><p class="ckt">'+esc(p.t)+'</p><div class="ckx">'+esc(p.x)+'</div>'+
+  d.innerHTML='<div class="ckin"><div class="cktop"><b>'+esc(CK.title)+'</b><button data-ck="x" aria-label="Sair">×</button></div><div id="cktm"></div><p class="ckt">'+esc(p.t)+'</p>'+vzBar()+'<div class="ckx">'+esc(p.x)+'</div>'+
   (sec?'<div class="ckact"><button data-ck="t" data-s="'+sec+'">Iniciar cronômetro de '+tmFmt(sec*1000)+'</button>'+(/Android/i.test(navigator.userAgent)?'<a href="intent:#Intent;action=android.intent.action.SET_TIMER;i.android.intent.extra.alarm.LENGTH='+sec+';end">Usar o relógio do celular</a>':'')+'</div>':'')+
   '<div class="ckbar"><button data-ck="p"'+(CK.i?'':' disabled')+'>Anterior</button><button class="pri" data-ck="n">'+(last?'Concluir':'Próximo')+'</button></div></div>';tmDraw()}
 document.addEventListener("click",function(e){
   var b=e.target.closest("[data-ck]");if(!b||!CK)return;var k=b.dataset.ck;
+  if(k==="listen"){vzReadStep();return}
+  if(k==="vz"){if(VZ.on){vzStop();cookDraw()}else vzStart();return}
   if(k==="t"){tmStart(+b.dataset.s);return}
   if(k==="s"||k==="c"){tmStop();return}
-  if(k==="x"||(k==="n"&&CK.i>=CK.p.length-1)){tmStop();var d=$("cook");if(d)d.remove();CK=null;wakeOff();SKIP=true;history.back();return}
-  CK.i+=k==="n"?1:-1;cookDraw()});
+  if(k==="x"||(k==="n"&&CK.i>=CK.p.length-1)){tmStop();vzStop();var d=$("cook");if(d)d.remove();CK=null;wakeOff();SKIP=true;history.back();return}
+  CK.i+=k==="n"?1:-1;cookDraw();if(VZ.on)vzReadStep()});
 document.addEventListener("visibilitychange",function(){if(CK&&document.visibilityState==="visible")wakeOn()});
 var GT=null;
 function geoSearch(q,bid){
@@ -680,7 +724,7 @@ function trackH(){
   if(k===HK)return;
   HK=k;HS.length=CUR+1;HS.push(snap());CUR=HS.length-1;try{history.pushState({i:CUR},"")}catch(e){}}
 window.addEventListener("popstate",function(e){
-  if(CK){tmStop();var d=$("cook");if(d)d.remove();CK=null;wakeOff();return}
+  if(CK){tmStop();vzStop();var d=$("cook");if(d)d.remove();CK=null;wakeOff();return}
   var v=$("vid");if(v){v.remove();return}
   if(SKIP){SKIP=false;return}
   if(!S.user)return;
@@ -693,6 +737,14 @@ function locCard(){
   var um=S.user.user_metadata||{},c=um.city||"São Caetano do Sul";
   return '<div class="sugh" style="display:block;color:var(--ink)"><b style="font-family:Sora,sans-serif;font-size:17px">Onde você está hoje?</b><p class="sub" style="margin:4px 0 10px">Uso a cidade só para sugerir receitas pelo clima.</p><input class="f" id="l_city" placeholder="Comece a digitar a cidade" autocomplete="off"><div id="l_sug"></div><button class="btn alt" data-act="locstay">Continuar em '+esc(c)+'</button></div>'}
 document.addEventListener("input",function(e){if(e.target.id==="l_city"){clearTimeout(GT);var v=e.target.value.trim();GT=setTimeout(function(){geoSearch(v,"l_sug")},300)}});
+function devOn(){try{return localStorage.getItem("lulu_dev")==="1"}catch(e){return false}}
+async function readVid(){
+  var r=byId(S.id),id=ytId(r&&r.source_url);if(!id)return;toast("Lendo o vídeo… pode levar um minuto");
+  try{
+    var x=await ai({action:"video",id:id}),c=x.recipe;
+    var u=await sb.from("recipes").update({ingredients:c.ingredients,steps:c.steps,prep_time:r.prep_time||c.prep_time,difficulty:r.difficulty||c.difficulty,servings:r.servings||c.servings,tags:(r.tags&&r.tags.length)?r.tags:c.tags,category:c.category}).eq("id",r.id);
+    if(u.error)throw u.error;await load();draw();toast("Receita preenchida")
+  }catch(e){toast(nice(e))}}
 async function madeToday(){
   var r=byId(S.id),log=(r.made_log||[]).concat([new Date().toISOString()]);
   var u=await sb.from("recipes").update({made_log:log}).eq("id",r.id);
@@ -708,7 +760,7 @@ function recipe(){
   '<div class="facts"><div>'+ic("clock",22)+'<b>'+esc(r.prep_time||"—")+'</b><small>Tempo</small></div><div>'+ic("hat",22)+'<b>'+esc(r.difficulty||"—")+'</b><small>Dificuldade</small></div><div>'+ic("dish",22)+'<b>'+esc(cur||r.servings||"—")+'</b><small>Porções</small></div></div>'+
   ((r.tags||[]).length?'<div class="chips wrap" style="margin-top:14px">'+r.tags.map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join('')+'</div>':'')+
   (vid?'<button class="btn" data-act="vid" data-id="'+vid+'">Assistir o vídeo</button>':'')+
-  '<button class="btn" data-act="cook">Modo cozinha</button><button class="btn alt" data-act="madetoday">Fiz hoje</button><button class="btn alt" data-act="shareRec">Compartilhar receita</button>'+(made?'<p class="pvnote" style="text-align:center">'+made+'</p>':'')+
+  '<button class="btn" data-act="cook">Modo cozinha</button>'+(!ings.length&&vid?'<button class="btn alt" data-act="readvid">Ler a receita do vídeo</button>':'')+
   '</div><div class="rr">'+
   '<h3>'+ic("jug",22)+'Ingredientes</h3>'+(base?'<div class="scaler"><button data-act="scdec" aria-label="Menos">−</button><b>'+cur+(cur===1?' porção':' porções')+'</b><button data-act="scinc" aria-label="Mais">+</button><button data-act="scx2">Dobrar</button><button data-act="schalf">Metade</button></div>':'')+
   (ings.length?'<ul>'+sc.map(function(i){return '<li>'+esc(i)+'</li>'}).join('')+'</ul>':'<p class="sub" style="margin:0">Sem ingredientes ainda.</p>')+
@@ -741,8 +793,8 @@ function form(){
   '<div class="err" id="ferr"></div><button class="btn" data-act="save" id="sbtn">Salvar receita</button>'+
   (r.id?'<button class="btn del" data-act="del">Apagar esta receita</button>':'')}
 function nav(){
-  var n=[["home","home","Início"],["busca","search","Buscar"],["favs","heart","Favoritas"],["add","plus","Nova"],["me","user","Perfil"]],cur=S.v==="pv"?(S.pvBack||"home"):S.v;
-  $("nav").innerHTML=n.map(function(x){var on=(cur===x[0]||(x[0]==="home"&&(cur==="list"||cur==="recipe"))||(x[0]==="add"&&cur==="form"));return '<button class="'+(on?'on':'')+'" data-go="'+x[0]+'">'+ic(x[1],24)+x[2]+'</button>'}).join('')}
+  var n=[["home","home","Início"],["busca","search","Buscar"],["favs","heart","Favoritas"],["add","plus","Nova"],["shop","cart","Lista"],["me","user","Perfil"]],cur=S.v==="pv"?(S.pvBack||"home"):S.v;
+  $("nav").innerHTML=n.map(function(x){var on=(cur===x[0]||(x[0]==="home"&&(cur==="list"||cur==="recipe"))||(x[0]==="add"&&cur==="form")||(x[0]==="shop"&&cur==="plan"));return '<button class="'+(on?'on':'')+'" data-go="'+x[0]+'">'+ic(x[1],24)+x[2]+'</button>'}).join('')}
 function draw(){
   var f={login:login,home:home,list:list,recipe:recipe,form:form,favs:favs,me:me,pv:pv,busca:busca,shop:shop,newpw:newpw,plan:plan};
   var a=$("app");a.innerHTML=f[S.v]();a.classList.remove("turn");void a.offsetWidth;a.classList.add("turn");
@@ -759,7 +811,7 @@ function shrink(file,max){
     img.onerror=function(){rej(new Error("foto"))};img.src=u})
 }
 async function up(path,blob){var r=await sb.storage.from("recipe-photos").upload(path,blob,{upsert:true,contentType:"image/jpeg"});if(r.error)throw r.error}
-function nice(e){var m=(e&&e.message)||"";if(/Invalid login/i.test(m))return "E-mail ou senha incorretos.";if(/^fn_404/.test(m))return "A função lulu-ai não foi encontrada no Supabase. Ela precisa existir com esse nome exato.";if(/^fn_401/.test(m))return "O Supabase bloqueou a chamada (Verify JWT está ligado). Desligue e salve.";if(/rate limit|over_email/i.test(m))return "Muitos pedidos de e-mail. Espere um pouco e tente de novo.";if(/not authorized/i.test(m))return "O Supabase só envia e-mail para quem está na equipe do projeto (limite do plano grátis).";if(/nao_receita/.test(m))return "Isso não parece ser uma receita.";if(/^ia_limite/.test(m))return "A IA atingiu o limite de hoje. Tente amanhã ou preencha à mão.";if(/^ia_sem_chave/.test(m))return "Falta a chave da IA nos Secrets do Supabase.";if(/^ia/.test(m))return "A IA não respondeu agora. Tente de novo em instantes.";if(/^auth/.test(m))return "A IA não reconheceu seu login. Saia e entre de novo.";if(/Failed to send/i.test(m))return "Não cheguei à função. Confira se ela está publicada como lulu-ai, com Verify JWT desligado.";if(/non-2xx|not found|404|401|Invalid JWT/i.test(m))return "A função respondeu com erro ("+m.slice(0,50)+").";if(/fetch|network/i.test(m))return "Sem conexão com a internet.";return "Algo deu errado. Tente de novo."}
+function nice(e){var m=(e&&e.message)||"";if(/Invalid login/i.test(m))return "E-mail ou senha incorretos.";if(/^fn_404/.test(m))return "A função lulu-ai não foi encontrada no Supabase. Ela precisa existir com esse nome exato.";if(/^fn_401/.test(m))return "O Supabase bloqueou a chamada (Verify JWT está ligado). Desligue e salve.";if(/rate limit|over_email/i.test(m))return "Muitos pedidos de e-mail. Espere um pouco e tente de novo.";if(/not authorized/i.test(m))return "O Supabase só envia e-mail para quem está na equipe do projeto (limite do plano grátis).";if(/sem_receita/.test(m))return "O vídeo não traz a receita escrita.";if(/yt_sem_chave/.test(m))return "Falta a chave do YouTube nos Secrets do Supabase.";if(/nao_receita/.test(m))return "Isso não parece ser uma receita.";if(/^ia_limite/.test(m))return "A IA atingiu o limite de hoje. Tente amanhã ou preencha à mão.";if(/^ia_sem_chave/.test(m))return "Falta a chave da IA nos Secrets do Supabase.";if(/^ia/.test(m))return "A IA não respondeu agora. Tente de novo em instantes.";if(/^auth/.test(m))return "A IA não reconheceu seu login. Saia e entre de novo.";if(/Failed to send/i.test(m))return "Não cheguei à função. Confira se ela está publicada como lulu-ai, com Verify JWT desligado.";if(/non-2xx|not found|404|401|Invalid JWT/i.test(m))return "A função respondeu com erro ("+m.slice(0,50)+").";if(/fetch|network/i.test(m))return "Sem conexão com a internet.";return "Algo deu errado. Tente de novo."}
 
 async function doLogin(){
   var b=$("lbtn");b.disabled=true;b.textContent="Entrando…";
@@ -806,6 +858,8 @@ document.addEventListener("click",async function(e){
   if(d.act==="sugadd"){addSug(+d.i);return}
   if(d.act==="srai"){srAI();return}
   if(d.act==="doideas"){doIdeas();return}
+  if(d.act==="readvid"){readVid();return}
+  if(d.act==="vtap"){S.vt=(S.vt||0)+1;if(S.vt>=5){S.vt=0;try{localStorage.setItem("lulu_dev","1")}catch(e){}toast("Modo técnico ligado");draw()}return}
   if(d.act==="plshop"){planShop();return}
   if(d.act==="plrm"){var pp=planGet(),dd=d.d,ix=(pp[dd]||[]).indexOf(d.id);if(ix>-1){pp[dd].splice(ix,1);planSet(pp);var yy=window.scrollY;draw();window.scrollTo(0,yy)}return}
   if(d.act==="idea"){recByName(S.ip.list[+d.i].name);return}
