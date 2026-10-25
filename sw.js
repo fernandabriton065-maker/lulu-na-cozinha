@@ -1,4 +1,4 @@
-const CACHE = "lulu-v10";
+const CACHE = "lulu-v12";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest"];
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
